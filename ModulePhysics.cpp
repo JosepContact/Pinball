@@ -29,13 +29,14 @@ bool ModulePhysics::Start()
 	LOG("Creating Physics 2D environment");
 
 	world = new b2World(b2Vec2(GRAVITY_X, -GRAVITY_Y));
-	world->SetContactListener(this);
+	//world->SetContactListener(this);
 
 	// needed to create joints like mouse joint
 	b2BodyDef bd;
 	ground = world->CreateBody(&bd);
 
 	// big static circle as "ground" in the middle of the screen
+/*
 	int x = SCREEN_WIDTH / 2;
 	int y = SCREEN_HEIGHT / 1.5f;
 	int diameter = SCREEN_WIDTH / 2;
@@ -52,7 +53,7 @@ bool ModulePhysics::Start()
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	big_ball->CreateFixture(&fixture);
-
+	*/
 	return true;
 }
 
@@ -67,7 +68,7 @@ update_status ModulePhysics::PreUpdate()
 		{
 			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
 			PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
-			if(pb1 && pb2 && pb1->listener)
+			if (pb1 && pb2 && pb1->listener)
 				pb1->listener->OnCollision(pb1, pb2);
 		}
 	}

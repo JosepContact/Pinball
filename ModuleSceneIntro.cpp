@@ -26,6 +26,7 @@ bool ModuleSceneIntro::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	background = App->textures->Load("pinball/background.png");
+	ball = App->textures->Load("pinball/ball.png");
 	circle = App->textures->Load("pinball/wheel.png"); 
 	box = App->textures->Load("pinball/crate.png");
 	rick = App->textures->Load("pinball/rick_head.png");
@@ -58,7 +59,7 @@ update_status ModuleSceneIntro::Update()
 	
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
+		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 11));
 		circles.getLast()->data->listener = this;
 	}
 /*
@@ -120,18 +121,17 @@ update_status ModuleSceneIntro::Update()
 	// All draw functions ------------------------------------------------------
 	App->renderer->Blit(background, 0, 0, NULL, 0, 0);
 
-	/*
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
 	while(c != NULL)
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
-		if(c->data->Contains(App->input->GetMouseX(), App->input->GetMouseY()))
-			App->renderer->Blit(circle, x, y, NULL, 1.0f, c->data->GetRotation());
+		App->renderer->Blit(ball, x, y, NULL, 1.0f, c->data->GetRotation());
 		c = c->next;
 	}
 
+	/*
 	c = boxes.getFirst();
 
 	while(c != NULL)
