@@ -34,6 +34,8 @@ bool ModuleSceneIntro::Start()
 	
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 	
+	RDTriangle = App->physics->CreateChain(0, 0, RDTriangle_pts, 6);
+	RDTriangle->body->SetType(b2_staticBody);
 
 	return ret;
 }

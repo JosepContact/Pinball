@@ -1,30 +1,9 @@
-﻿Build started 18/10/2016 19:31:39.
-     1>Project "D:\CITM\DDVII\Physics II\Physics2_class4_-_handout\Physics2_class4 - handout\SDL Game.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         D:\VisualStudio2015\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt ModulePhysics.cpp
-         ModulePhysics.cpp
-     1>d:\citm\ddvii\physics ii\physics2_class4_-_handout\physics2_class4 - handout\modulephysics.cpp(122): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-     1>d:\citm\ddvii\physics ii\physics2_class4_-_handout\physics2_class4 - handout\modulephysics.cpp(123): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-     1>d:\citm\ddvii\physics ii\physics2_class4_-_handout\physics2_class4 - handout\modulephysics.cpp(166): warning C4018: '<': signed/unsigned mismatch
-     1>d:\citm\ddvii\physics ii\physics2_class4_-_handout\physics2_class4 - handout\modulephysics.cpp(347): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-     1>d:\citm\ddvii\physics ii\physics2_class4_-_handout\physics2_class4 - handout\modulephysics.cpp(348): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-     1>d:\citm\ddvii\physics ii\physics2_class4_-_handout\physics2_class4 - handout\modulephysics.cpp(354): warning C4244: 'return': conversion from 'float32' to 'int', possible loss of data
-     1>d:\visualstudio2015\vc\include\cmath(146): warning C4577: 'noexcept' used with no exception handling mode specified; termination on exception is not guaranteed. Specify /EHsc
-       Link:
-         D:\VisualStudio2015\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\CITM\DDVII\Physics II\Physics2_class4_-_handout\Physics2_class4 - handout\Debug\2D Physics - class 4.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"D:\CITM\DDVII\Physics II\Physics2_class4_-_handout\Physics2_class4 - handout\Debug\2D Physics - class 4.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\CITM\DDVII\Physics II\Physics2_class4_-_handout\Physics2_class4 - handout\Debug\2D Physics - class 4.lib" /MACHINE:X86 Debug\Application.obj
-         Debug\log.obj
-         Debug\Main.obj
-         Debug\ModuleAudio.obj
-         Debug\ModuleInput.obj
-         Debug\ModulePhysics.obj
-         Debug\ModulePlayer.obj
-         Debug\ModuleRender.obj
-         Debug\ModuleSceneIntro.obj
-         Debug\ModuleTextures.obj
-         Debug\ModuleWindow.obj
-         SDL Game.vcxproj -> D:\CITM\DDVII\Physics II\Physics2_class4_-_handout\Physics2_class4 - handout\Debug\2D Physics - class 4.exe
-     1>Done Building Project "D:\CITM\DDVII\Physics II\Physics2_class4_-_handout\Physics2_class4 - handout\SDL Game.vcxproj" (Build target(s)).
-
-Build succeeded.
-
-Time Elapsed 00:00:00.84
+﻿  ModuleSceneIntro.cpp
+c:\users\pauor\documents\github\pinball\modulesceneintro.cpp(181): warning C4101: 'y': unreferenced local variable
+c:\users\pauor\documents\github\pinball\modulesceneintro.cpp(181): warning C4101: 'x': unreferenced local variable
+c:\program files (x86)\microsoft visual studio 14.0\vc\include\limits(210): warning C4577: 'noexcept' used with no exception handling mode specified; termination on exception is not guaranteed. Specify /EHsc
+  Application.cpp
+c:\program files (x86)\microsoft visual studio 14.0\vc\include\limits(210): warning C4577: 'noexcept' used with no exception handling mode specified; termination on exception is not guaranteed. Specify /EHsc
+  Generating Code...
+  SDL Game.vcxproj -> C:\Users\pauor\Documents\GitHub\Pinball\Debug\2D Physics - class 4.exe
+  SDL Game.vcxproj -> C:\Users\pauor\Documents\GitHub\Pinball\Debug\2D Physics - class 4.pdb (Full PDB)

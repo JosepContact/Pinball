@@ -21,6 +21,7 @@ public:
 	p2List<PhysBody*> circles;
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> ricks;
+	PhysBody* RDTriangle;
 
 	PhysBody* sensor;
 	bool sensed;
@@ -32,4 +33,13 @@ public:
 	uint bonus_fx;
 	p2Point<int> ray;
 	bool ray_on;
+
+private:
+	// Pivot 0, 0
+	int RDTriangle_pts[6] = {
+		33, 907,
+		33, 839,
+		138, 909
+	};
+
 };
