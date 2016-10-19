@@ -36,6 +36,18 @@ bool ModuleSceneIntro::Start()
 	
 	RDTriangle = App->physics->CreateChain(0, 0, RDTriangle_pts, 6);
 	RDTriangle->body->SetType(b2_staticBody);
+	BckgroundCol = App->physics->CreateChain(0, 0, BckgroundCol_pts, 178);
+	BckgroundCol->body->SetType(b2_staticBody);
+	LShapeL = App->physics->CreateChain(0, 0, LShapeL_pts, 18);
+	LShapeL->body->SetType(b2_staticBody);
+	LShapeR = App->physics->CreateChain(0, 0, LShapeR_pts, 14);
+	LShapeR->body->SetType(b2_staticBody);
+	TRRampE = App->physics->CreateChain(0, 0, TRRampE_pts, 22);
+	TRRampE->body->SetType(b2_staticBody);
+	TRRed = App->physics->CreateChain(0, 0, TRRed_pts, 30);
+	TRRed->body->SetType(b2_staticBody);
+	TLRed = App->physics->CreateChain(0, 0, TLRed_pts, 34);
+	TLRed->body->SetType(b2_staticBody);
 
 	return ret;
 }
