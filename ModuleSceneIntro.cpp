@@ -52,6 +52,8 @@ bool ModuleSceneIntro::Start()
 	BouncyDL->body->SetType(b2_staticBody);
 	BouncyDR = App->physics->CreateChain(0, 0, BouncyDR_pts, 14);
 	BouncyDR->body->SetType(b2_staticBody);
+	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 18);
+	StartingRamp->body->SetType(b2_staticBody);
 
 	return ret;
 }

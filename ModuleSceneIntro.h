@@ -30,6 +30,7 @@ public:
 	PhysBody* TLRed;
 	PhysBody* BouncyDL;
 	PhysBody* BouncyDR;
+	PhysBody* StartingRamp;
 
 	PhysBody* sensor;
 	bool sensed;
@@ -69,6 +70,19 @@ private:
 		73, 303,
 		83, 335,
 		101, 387
+	};
+
+	// Pivot 0, 0
+	int StartingRamp_pts[18] = {
+		483, 908,
+		482, 185,
+		470, 147,
+		446, 114,
+		422, 142,
+		455, 221,
+		453, 910,
+		453, 996,
+		483, 996
 	};
 
 	// Pivot 0, 0
