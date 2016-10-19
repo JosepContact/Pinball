@@ -60,6 +60,7 @@ bool ModuleSceneIntro::Start()
 
 	BckgroundCol->body->SetActive(false);
 
+	ball_available = true;
 
 	return ret;
 }
@@ -93,15 +94,16 @@ update_status ModuleSceneIntro::Update()
 		circles.add(App->physics->CreateCircle(471, 870, 11));
 		circles.getLast()->data->listener = this;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && circles.count() > 0)
 	{
-		b2Vec2 point;
-		if (circles.count() > 0)
-		{
+		if (ball_available == true) {
+			b2Vec2 point;
 			circles.getLast()->data->body->GetLocalPoint(point);
-			circles.getLast()->data->body->ApplyForce(b2Vec2(0, -200), point, true);
+			circles.getLast()->data->body->ApplyForce(b2Vec2(0, -160), point, true);
 			circles.getLast()->data->listener = this;
+			ball_available = false;
 		}
+		
 	}
 
 /*

@@ -38,7 +38,7 @@ public:
 
 	PhysBody* sensor;
 	bool sensed;
-
+	bool ball_available;
 	// Textures
 	SDL_Texture* background;
 	SDL_Texture* foreground;
