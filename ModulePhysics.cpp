@@ -186,6 +186,21 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 	return pbody;
 }
 
+bool ModulePhysics::SwitchCollisions(PhysBody * Triggerer, bool flag, PhysBody* Trigger, PhysBody * Collider, ...)
+{
+	bool ret = true;
+	
+	va_list colliders;
+
+	for (va_start(colliders, Collider); Collider != NULL; Collider = va_arg(colliders, PhysBody*)) {
+		if (Trigger->Contains(Triggerer->body->GetPosition().x, Triggerer->body->GetPosition().y)) {
+			Collider->body->SetActive(flag);
+		}
+	}
+
+	return ret;
+}
+
 // 
 update_status ModulePhysics::PostUpdate()
 {

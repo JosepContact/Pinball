@@ -18,6 +18,7 @@ public:
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
 public:
+	// Bodies
 	p2List<PhysBody*> circles;
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> ricks;
@@ -32,8 +33,13 @@ public:
 	PhysBody* BouncyDR;
 	PhysBody* StartingRamp;
 
+	// Sensors / Triggers
+	PhysBody* StartingRampSensor;
+
 	PhysBody* sensor;
 	bool sensed;
+
+	// Textures
 	SDL_Texture* background;
 	SDL_Texture* ball;
 	SDL_Texture* circle;
@@ -73,16 +79,14 @@ private:
 	};
 
 	// Pivot 0, 0
-	int StartingRamp_pts[18] = {
-		483, 908,
+	int StartingRamp_pts[14] = {
+		482, 882,
 		482, 185,
 		470, 147,
 		446, 114,
 		422, 142,
 		455, 221,
-		453, 910,
-		453, 996,
-		483, 996
+		453, 881
 	};
 
 	// Pivot 0, 0

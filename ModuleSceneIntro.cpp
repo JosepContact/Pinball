@@ -34,6 +34,8 @@ bool ModuleSceneIntro::Start()
 	
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 	
+	StartingRampSensor = App->physics->CreateRectangleSensor(468, 205, 50, 25);
+
 	RDTriangle = App->physics->CreateChain(0, 0, RDTriangle_pts, 6);
 	RDTriangle->body->SetType(b2_staticBody);
 	BckgroundCol = App->physics->CreateChain(0, 0, BckgroundCol_pts, 178);
@@ -52,8 +54,11 @@ bool ModuleSceneIntro::Start()
 	BouncyDL->body->SetType(b2_staticBody);
 	BouncyDR = App->physics->CreateChain(0, 0, BouncyDR_pts, 14);
 	BouncyDR->body->SetType(b2_staticBody);
-	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 18);
+	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 14);
 	StartingRamp->body->SetType(b2_staticBody);
+
+	BckgroundCol->body->SetActive(false);
+
 
 	return ret;
 }
@@ -148,6 +153,11 @@ update_status ModuleSceneIntro::Update()
 		int x, y;
 		c->data->GetPosition(x, y);
 		App->renderer->Blit(ball, x, y, NULL, 1.0f, c->data->GetRotation());
+		if (StartingRampSensor->Contains(x, y)) {
+			StartingRamp->body->SetActive(false);
+			BckgroundCol->body->SetActive(true);
+		}
+		
 		c = c->next;
 	}
 
@@ -191,6 +201,7 @@ update_status ModuleSceneIntro::Update()
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
 	}
 	*/
+
 	return UPDATE_CONTINUE;
 }
 
