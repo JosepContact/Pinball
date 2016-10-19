@@ -41,6 +41,7 @@ public:
 
 	// Textures
 	SDL_Texture* background;
+	SDL_Texture* foreground;
 	SDL_Texture* ball;
 	SDL_Texture* circle;
 	SDL_Texture* box;

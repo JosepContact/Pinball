@@ -25,6 +25,7 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	foreground = App->textures->Load("pinball/foreground.png");
 	background = App->textures->Load("pinball/background.png");
 	ball = App->textures->Load("pinball/ball.png");
 	circle = App->textures->Load("pinball/wheel.png"); 
@@ -87,6 +88,22 @@ update_status ModuleSceneIntro::Update()
 		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 11));
 		circles.getLast()->data->listener = this;
 	}
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+	{
+		circles.add(App->physics->CreateCircle(471, 870, 11));
+		circles.getLast()->data->listener = this;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
+	{
+		b2Vec2 point;
+		if (circles.count() > 0)
+		{
+			circles.getLast()->data->body->GetLocalPoint(point);
+			circles.getLast()->data->body->ApplyForce(b2Vec2(0, -200), point, true);
+			circles.getLast()->data->listener = this;
+		}
+	}
+
 /*
 	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
@@ -201,7 +218,7 @@ update_status ModuleSceneIntro::Update()
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
 	}
 	*/
-
+	App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
 	return UPDATE_CONTINUE;
 }
 
