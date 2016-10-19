@@ -48,6 +48,10 @@ bool ModuleSceneIntro::Start()
 	TRRed->body->SetType(b2_staticBody);
 	TLRed = App->physics->CreateChain(0, 0, TLRed_pts, 34);
 	TLRed->body->SetType(b2_staticBody);
+	BouncyDL = App->physics->CreateChain(0, 0, BouncyDL_pts, 16);
+	BouncyDL->body->SetType(b2_staticBody);
+	BouncyDR = App->physics->CreateChain(0, 0, BouncyDR_pts, 14);
+	BouncyDR->body->SetType(b2_staticBody);
 
 	return ret;
 }

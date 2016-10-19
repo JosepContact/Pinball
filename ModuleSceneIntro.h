@@ -28,6 +28,8 @@ public:
 	PhysBody* TRRampE;
 	PhysBody* TRRed;
 	PhysBody* TLRed;
+	PhysBody* BouncyDL;
+	PhysBody* BouncyDR;
 
 	PhysBody* sensor;
 	bool sensed;
@@ -67,6 +69,29 @@ private:
 		73, 303,
 		83, 335,
 		101, 387
+	};
+
+	// Pivot 0, 0
+	int BouncyDL_pts[16] = {
+		64, 666,
+		71, 659,
+		78, 661,
+		85, 675,
+		119, 773,
+		117, 781,
+		105, 783,
+		64, 755
+	};
+
+	// Pivot 0, 0
+	int BouncyDR_pts[14] = {
+		336, 776,
+		340, 784,
+		351, 783,
+		394, 755,
+		393, 665,
+		383, 659,
+		372, 666
 	};
 
 	// Pivot 0, 0
