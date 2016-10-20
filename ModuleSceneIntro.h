@@ -24,6 +24,7 @@ public:
 	p2List<PhysBody*> circles;
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> ricks;
+	p2List<PhysBody*> BouncyCircles;
 	PhysBody* GreyBlocker;
 	PhysBody* RDTriangle;
 	PhysBody* BckgroundCol;
@@ -38,6 +39,7 @@ public:
 
 	// Sensors / Triggers
 	PhysBody* StartingRampSensor;
+	PhysBody* LoopRampSensor;
 
 	PhysBody* sensor;
 	bool sensed;

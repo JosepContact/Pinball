@@ -35,10 +35,13 @@ bool ModuleSceneIntro::Start()
 	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	
-	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
+	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 	
+	// Sensors
 	StartingRampSensor = App->physics->CreateRectangleSensor(325, 80, 25, 40);
+	LoopRampSensor = App->physics->CreateRectangleSensor(225, 150, 40, 25);
 
+	// Static Bodies
 	RDTriangle = App->physics->CreateChain(0, 0, RDTriangle_pts, 6);
 	RDTriangle->body->SetType(b2_staticBody);
 	BckgroundCol = App->physics->CreateChain(0, 0, BckgroundCol_pts, 178);
@@ -55,12 +58,24 @@ bool ModuleSceneIntro::Start()
 	TLRed->body->SetType(b2_staticBody);
 	BouncyDL = App->physics->CreateChain(0, 0, BouncyDL_pts, 16);
 	BouncyDL->body->SetType(b2_staticBody);
+	BouncyDL->body->GetFixtureList()->SetRestitution(BOUNCY_TRIANGLES_PWR);
 	BouncyDR = App->physics->CreateChain(0, 0, BouncyDR_pts, 14);
 	BouncyDR->body->SetType(b2_staticBody);
+	BouncyDR->body->GetFixtureList()->SetRestitution(BOUNCY_TRIANGLES_PWR);
 	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 54);
 	StartingRamp->body->SetType(b2_staticBody);
 	GreyBlocker = App->physics->CreateRectangle(280, 80, 3, 40);
 	GreyBlocker->body->SetType(b2_staticBody);
+
+	// Bouncy Bodies Set Up
+	BouncyCircles.add(App->physics->CreateCircle(305, 275, 31));
+	BouncyCircles.add(App->physics->CreateCircle(268, 206, 31));
+	BouncyCircles.add(App->physics->CreateCircle(370, 214, 31));
+
+	for (p2List_item<PhysBody*>* bc = BouncyCircles.getFirst(); bc != NULL; bc = bc->next) {
+		bc->data->body->SetType(b2_staticBody);
+		bc->data->body->GetFixtureList()->SetRestitution(BOUNCY_CIRCLES_PWR);
+	}
 
 	BckgroundCol->body->SetActive(false);
 	TRRed->body->SetActive(false);
@@ -69,7 +84,7 @@ bool ModuleSceneIntro::Start()
 	circles.add(App->physics->CreateCircle(471, 870, 11));
 	circles.getLast()->data->listener = this;
 	circles.getLast()->data->body->SetFixedRotation(true);
-	circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.6);
+	circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.3);
 
 	return ret;
 }
@@ -115,53 +130,6 @@ update_status ModuleSceneIntro::Update()
 		
 	}
 
-/*
-	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{
-		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 100, 50));
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-	{
-		// Pivot 0, 0
-		int rick_head[64] = {
-			14, 36,
-			42, 40,
-			40, 0,
-			75, 30,
-			88, 4,
-			94, 39,
-			111, 36,
-			104, 58,
-			107, 62,
-			117, 67,
-			109, 73,
-			110, 85,
-			106, 91,
-			109, 99,
-			103, 104,
-			100, 115,
-			106, 121,
-			103, 125,
-			98, 126,
-			95, 137,
-			83, 147,
-			67, 147,
-			53, 140,
-			46, 132,
-			34, 136,
-			38, 126,
-			23, 123,
-			30, 114,
-			10, 102,
-			29, 90,
-			0, 75,
-			30, 62
-		};
-
-		ricks.add(App->physics->CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), rick_head, 64));
-	}
-*/
 	// Prepare for raycast ------------------------------------------------------
 	
 	iPoint mouse;
@@ -185,9 +153,11 @@ update_status ModuleSceneIntro::Update()
 			StartingRamp->body->SetActive(false);
 			BckgroundCol->body->SetActive(true);
 			TRRed->body->SetActive(true);
-			BallisUp = !BallisUp;
+			BallisUp = false;
 		}
-		
+		App->physics->SwitchCollisions(c->data, false, LoopRampSensor, BckgroundCol);
+		//App->physics->SwitchCollisions(c->data, true, LoopRampSensor, ); CAL FER EL COLLIDER DE LA LOOP_RAMP!!!
+
 		c = c->next;
 	}
 
