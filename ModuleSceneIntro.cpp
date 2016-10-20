@@ -23,6 +23,8 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
+	BallisUp = true;
+
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	foreground = App->textures->Load("pinball/foreground.png");
@@ -35,7 +37,7 @@ bool ModuleSceneIntro::Start()
 	
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 	
-	StartingRampSensor = App->physics->CreateRectangleSensor(440, 160, 25, 25);
+	StartingRampSensor = App->physics->CreateRectangleSensor(325, 80, 25, 40);
 
 	RDTriangle = App->physics->CreateChain(0, 0, RDTriangle_pts, 6);
 	RDTriangle->body->SetType(b2_staticBody);
@@ -55,14 +57,19 @@ bool ModuleSceneIntro::Start()
 	BouncyDL->body->SetType(b2_staticBody);
 	BouncyDR = App->physics->CreateChain(0, 0, BouncyDR_pts, 14);
 	BouncyDR->body->SetType(b2_staticBody);
-	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 14);
+	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 54);
 	StartingRamp->body->SetType(b2_staticBody);
+	GreyBlocker = App->physics->CreateRectangle(280, 80, 3, 40);
+	GreyBlocker->body->SetType(b2_staticBody);
 
 	BckgroundCol->body->SetActive(false);
+	TRRed->body->SetActive(false);
 	ball_available = true;
 
 	circles.add(App->physics->CreateCircle(471, 870, 11));
 	circles.getLast()->data->listener = this;
+	circles.getLast()->data->body->SetFixedRotation(true);
+	circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.6);
 
 	return ret;
 }
@@ -177,6 +184,8 @@ update_status ModuleSceneIntro::Update()
 		if (StartingRampSensor->Contains(x, y)) {
 			StartingRamp->body->SetActive(false);
 			BckgroundCol->body->SetActive(true);
+			TRRed->body->SetActive(true);
+			BallisUp = !BallisUp;
 		}
 		
 		c = c->next;
@@ -222,7 +231,8 @@ update_status ModuleSceneIntro::Update()
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
 	}
 	*/
-	App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
+	if(!BallisUp)
+		App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
 	return UPDATE_CONTINUE;
 }
 

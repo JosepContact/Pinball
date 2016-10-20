@@ -18,10 +18,13 @@ public:
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
 public:
+	bool BallisUp;
+
 	// Bodies
 	p2List<PhysBody*> circles;
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> ricks;
+	PhysBody* GreyBlocker;
 	PhysBody* RDTriangle;
 	PhysBody* BckgroundCol;
 	PhysBody* LShapeL;
@@ -80,14 +83,35 @@ private:
 	};
 
 	// Pivot 0, 0
-	int StartingRamp_pts[14] = {
+	// Pivot 0, 0
+	int StartingRamp_pts[54] = {
 		482, 882,
-		482, 185,
-		470, 147,
-		446, 114,
-		422, 142,
-		455, 221,
-		453, 881
+		482, 190,
+		467, 148,
+		447, 117,
+		424, 97,
+		400, 81,
+		377, 71,
+		355, 66,
+		331, 63,
+		306, 63,
+		299, 87,
+		308, 101,
+		328, 92,
+		340, 93,
+		358, 97,
+		379, 106,
+		389, 111,
+		402, 119,
+		411, 127,
+		421, 136,
+		433, 152,
+		441, 167,
+		449, 187,
+		453, 209,
+		453, 221,
+		452, 229,
+		454, 881
 	};
 
 	// Pivot 0, 0
