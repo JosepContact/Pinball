@@ -55,6 +55,10 @@ public:
 	void BeginContact(b2Contact* contact);
 	b2Body* stick_left_body;
 	b2Body* stick_right_body;
+
+	// public rotations for the Blit
+	float left_rotation = 0;
+	float right_rotation = 0;
 private:
 
 	bool debug;

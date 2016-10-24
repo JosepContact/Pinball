@@ -53,6 +53,9 @@ public:
 	bool sensed;
 	bool ball_available;
 	// Textures
+
+	SDL_Texture* left_kicker;
+	SDL_Texture* right_kicker;
 	SDL_Texture* background;
 	SDL_Texture* foreground;
 	SDL_Texture* ball;

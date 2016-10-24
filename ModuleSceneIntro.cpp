@@ -27,6 +27,8 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	right_kicker = App->textures->Load("pinball/right_kicker.png");
+	left_kicker = App->textures->Load("pinball/left_kicker.png");
 	foreground = App->textures->Load("pinball/foreground.png");
 	background = App->textures->Load("pinball/background.png");
 	ball = App->textures->Load("pinball/ball.png");
@@ -126,21 +128,9 @@ bool ModuleSceneIntro::CleanUp()
 	return true;
 }
 
-// Update: draw background
+
 update_status ModuleSceneIntro::Update()
 {
-	/*if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		ray_on = !ray_on;
-		ray.x = App->input->GetMouseX();
-		ray.y = App->input->GetMouseY();
-	}
-*/
-	/*if (BckgroundCol->body->IsActive())
-	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 11));
-	}*/
-
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
@@ -170,6 +160,9 @@ update_status ModuleSceneIntro::Update()
 
 	// All draw functions ------------------------------------------------------
 	App->renderer->Blit(background, 0, 0, NULL, 0, 0);
+
+	App->renderer->Blit(left_kicker, 69, 802, NULL, 1.0f, App->physics->left_rotation - 2);
+	App->renderer->Blit(right_kicker, 253, 802, NULL, 1.0f, App->physics->right_rotation + 2);
 
 	p2List_item<PhysBody*>* c = circles.getFirst();
 

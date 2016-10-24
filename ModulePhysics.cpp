@@ -68,9 +68,9 @@ bool ModulePhysics::Start()
 	joint_left_def.collideConnected = true;
 	joint_left_def.localAnchorA.Set(PIXEL_TO_METERS(0), 0);
 	joint_left_def.localAnchorB.Set(PIXEL_TO_METERS(-40), PIXEL_TO_METERS(-2));
-	joint_left_def.referenceAngle = 25 * DEGTORAD;
+	joint_left_def.referenceAngle = 30 * DEGTORAD;
 	joint_left_def.enableLimit = true;
-	joint_left_def.lowerAngle = -40 * DEGTORAD;
+	joint_left_def.lowerAngle = -42 * DEGTORAD;
 	joint_left_def.upperAngle = 0 * DEGTORAD;
 	joint_left_def.enableMotor = true;
 	left_joint = (b2RevoluteJoint*)world->CreateJoint(&joint_left_def);
@@ -102,13 +102,16 @@ bool ModulePhysics::Start()
 	joint_right_def.collideConnected = true;
 	joint_right_def.localAnchorA.Set(PIXEL_TO_METERS(0), 0);
 	joint_right_def.localAnchorB.Set(PIXEL_TO_METERS(40), PIXEL_TO_METERS(-2));
-	joint_right_def.referenceAngle = -25 * DEGTORAD;
+	joint_right_def.referenceAngle = -30 * DEGTORAD;
 	joint_right_def.enableLimit = true;
 	joint_right_def.lowerAngle = 0 * DEGTORAD;
-	joint_right_def.upperAngle = 40 * DEGTORAD;
+	joint_right_def.upperAngle = 42 * DEGTORAD;
 	joint_right_def.enableMotor = true;
 	right_joint = (b2RevoluteJoint*)world->CreateJoint(&joint_right_def);
 	
+
+	//Set kicker art
+
 	return true;
 }
 
@@ -260,6 +263,7 @@ PhysBody* ModulePhysics::CreateLeftStick()
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
+	fixture.restitution = 0.1f;
 	b->CreateFixture(&fixture);
 
 	PhysBody* pbody = new PhysBody();
@@ -291,6 +295,7 @@ PhysBody * ModulePhysics::CreateRightStick()
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
+	fixture.restitution = 0.1f;
 	b->CreateFixture(&fixture);
 
 	PhysBody* pbody = new PhysBody();
@@ -321,6 +326,11 @@ bool ModulePhysics::SwitchCollisions(PhysBody * Triggerer, bool flag, PhysBody *
 // 
 update_status ModulePhysics::PostUpdate()
 {
+
+
+	left_rotation = RADTODEG * left_joint->GetJointAngle();
+	right_rotation = RADTODEG * right_joint->GetJointAngle();
+
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
 		debug = !debug;
 	}
@@ -338,7 +348,6 @@ update_status ModulePhysics::PostUpdate()
 		right_joint->SetMaxMotorTorque(720);
 		right_joint->SetMotorSpeed(800 * DEGTORAD);
 	}
-
 
 	if(!debug)
 		return UPDATE_CONTINUE;
@@ -413,22 +422,10 @@ update_status ModulePhysics::PostUpdate()
 				break;
 			}
 
-			// TODO 1: If mouse button 1 is pressed ...
-			// App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN
-			// test if the current body contains mouse position
 		}
 	}
 
-	// If a body was selected we will attach a mouse joint to it
-	// so we can pull it around
-	// TODO 2: If a body was selected, create a mouse joint
-	// using mouse_joint class property
-
-
-	// TODO 3: If the player keeps pressing the mouse button, update
-	// target position and draw a red line between both anchor points
-
-	// TODO 4: If the player releases the mouse button, destroy the joint
+	
 
 	return UPDATE_CONTINUE;
 }
