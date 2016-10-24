@@ -30,11 +30,14 @@ public:
 	PhysBody* BckgroundCol;
 	PhysBody* LShapeL;
 	PhysBody* LShapeR;
-	PhysBody* TRRampE;
 	PhysBody* TRRed;
 	PhysBody* TLRed;
 	PhysBody* BouncyDL;
 	PhysBody* BouncyDR;
+
+	//Ramps
+	PhysBody* TRRamp;
+	PhysBody* TRRampE;
 	PhysBody* StartingRamp;
 	PhysBody* LoopRampOut;
 	PhysBody* LoopRampIn;
@@ -44,6 +47,7 @@ public:
 	PhysBody* StartingRampSensor;
 	PhysBody* LoopRampSensor;
 	PhysBody* LoopRampTrigger;
+	PhysBody* TRRampSensor;
 
 	PhysBody* sensor;
 	bool sensed;
@@ -66,6 +70,91 @@ private:
 		33, 839,
 		138, 909
 	};
+
+	// Pivot 0, 0
+	int TRRamp_pts[160] = {
+		287, 325,
+		308, 237,
+		317, 213,
+		333, 198,
+		351, 194,
+		365, 195,
+		381, 201,
+		391, 212,
+		395, 223,
+		397, 240,
+		387, 324,
+		393, 344,
+		402, 353,
+		413, 365,
+		421, 380,
+		424, 396,
+		423, 410,
+		414, 426,
+		406, 435,
+		396, 447,
+		381, 459,
+		378, 467,
+		375, 482,
+		381, 495,
+		391, 500,
+		405, 512,
+		415, 526,
+		419, 537,
+		420, 554,
+		420, 570,
+		413, 585,
+		403, 594,
+		391, 603,
+		381, 613,
+		376, 623,
+		377, 636,
+		384, 648,
+		394, 659,
+		402, 664,
+		411, 675,
+		418, 688,
+		422, 706,
+		423, 726,
+		418, 734,
+		406, 739,
+		392, 734,
+		394, 723,
+		391, 705,
+		389, 693,
+		379, 683,
+		367, 672,
+		356, 660,
+		347, 640,
+		348, 618,
+		355, 601,
+		365, 587,
+		382, 574,
+		391, 564,
+		392, 550,
+		385, 533,
+		369, 519,
+		359, 508,
+		348, 487,
+		347, 469,
+		351, 455,
+		360, 443,
+		370, 431,
+		385, 416,
+		395, 402,
+		393, 385,
+		381, 369,
+		368, 357,
+		361, 337,
+		359, 316,
+		361, 298,
+		361, 277,
+		368, 249,
+		362, 235,
+		354, 237,
+		344, 343
+	};
+
 
 	// Pivot 0, 0
 	int LoopRampTriggered_pts[24] = {

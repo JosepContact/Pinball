@@ -39,8 +39,9 @@ bool ModuleSceneIntro::Start()
 	
 	// Sensors
 	StartingRampSensor = App->physics->CreateRectangleSensor(325, 80, 25, 40);
-	LoopRampSensor = App->physics->CreateRectangleSensor(225, 150, 40, 25);
+	LoopRampSensor = App->physics->CreateRectangleSensor(225, 150, 40, 10);
 	LoopRampTrigger = App->physics->CreateRectangleSensor(205, 165, 2, 40);
+	TRRampSensor = App->physics->CreateRectangleSensor(320, 310, 60, 4);
 
 	// Static Bodies
 	// Chains
@@ -64,6 +65,9 @@ bool ModuleSceneIntro::Start()
 	LoopRampOut->body->SetType(b2_staticBody);
 	LoopRampTriggered = App->physics->CreateChain(0, 0, LoopRampTriggered_pts, 34);
 	LoopRampTriggered->body->SetType(b2_staticBody);
+	TRRamp = App->physics->CreateChain(0, 0, TRRamp_pts, 160);
+	TRRamp->body->SetType(b2_staticBody);
+
 	// Rectangles
 	GreyBlocker = App->physics->CreateRectangle(280, 80, 3, 40);
 	GreyBlocker->body->SetType(b2_staticBody);
@@ -94,6 +98,7 @@ bool ModuleSceneIntro::Start()
 
 	p2List<PhysBody*> DeactivateQue;
 
+	DeactivateQue.add(TRRamp);
 	DeactivateQue.add(BckgroundCol);
 	DeactivateQue.add(TRRed);
 	DeactivateQue.add(LoopRampOut);
@@ -181,16 +186,22 @@ update_status ModuleSceneIntro::Update()
 			BallisUp = false;
 		}
 		// LoopRampSensor Switch
-		if (LoopRampSensor->Contains(x, y + c->data->height)) {
-			LoopRampOut->body->SetActive(true);
-			BckgroundCol->body->SetActive(false);
-			LoopRampTriggered->body->SetActive(false);
-		}
-		
-		// LoopRampTrigger Switch
-		if (LoopRampTrigger->Contains(x, y)) {
-			LoopRampOut->body->SetActive(false);
-			LoopRampTriggered->body->SetActive(true);
+		//if (LoopRampSensor->Contains(x, y + c->data->height)) {
+		//	LoopRampOut->body->SetActive(true);
+		//	BckgroundCol->body->SetActive(false);
+		//	LoopRampTriggered->body->SetActive(false);
+		//}
+		//
+		//// LoopRampTrigger Switch
+		//if (LoopRampTrigger->Contains(x, y)) {
+		//	LoopRampOut->body->SetActive(false);
+		//	LoopRampTriggered->body->SetActive(true);
+		//	BallisUp = true;
+		//}
+
+		//TRRamp Switch
+		if (TRRampSensor->Contains(x, y)) {
+			TRRamp->body->SetActive(true);
 			BallisUp = true;
 		}
 
@@ -240,9 +251,15 @@ update_status ModuleSceneIntro::Update()
 	if (!BallisUp) {
 		App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
 	}
-	else {
-		BckgroundCol->body->SetActive(false);
+	BckgroundCol->body->SetActive(!BallisUp);
+	TRRed->body->SetActive(!BallisUp);
+	TRRampE->body->SetActive(!BallisUp);
+	BouncyDR->body->SetActive(!BallisUp);
+	BouncyDL->body->SetActive(!BallisUp);
+	for (p2List_item<PhysBody*>* bc = BouncyCircles.getFirst(); bc != NULL; bc = bc->next) {
+	bc->data->body->SetActive(!BallisUp);
 	}
+	
 	return UPDATE_CONTINUE;
 }
 
