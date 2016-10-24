@@ -42,14 +42,12 @@ public:
 	PhysBody* LoopRampOut;
 	PhysBody* LoopRampIn;
 	PhysBody* LoopRampTriggered;
-	PhysBody* TRamp;
 
 	// Sensors / Triggers
 	PhysBody* StartingRampSensor;
 	PhysBody* LoopRampSensor;
 	PhysBody* LoopRampTrigger;
 	PhysBody* TRRampSensor;
-	PhysBody* TRampSensor;
 
 	PhysBody* sensor;
 	bool sensed;
@@ -71,40 +69,6 @@ private:
 		33, 907,
 		33, 839,
 		138, 909
-	};
-
-	// Pivot 0, 0
-	int TRamp_pts[60] = {
-		91, 104,
-		108, 96,
-		123, 94,
-		156, 93,
-		177, 93,
-		213, 95,
-		252, 100,
-		286, 108,
-		308, 118,
-		338, 133,
-		370, 155,
-		384, 173,
-		401, 207,
-		406, 227,
-		401, 291,
-		454, 293,
-		447, 249,
-		440, 212,
-		427, 178,
-		408, 153,
-		384, 130,
-		349, 107,
-		316, 90,
-		282, 77,
-		246, 68,
-		184, 55,
-		153, 54,
-		119, 57,
-		89, 61,
-		72, 71
 	};
 
 	// Pivot 0, 0

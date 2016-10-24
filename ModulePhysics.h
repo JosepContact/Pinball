@@ -46,16 +46,22 @@ public:
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, int* points, int size);
+	PhysBody* CreateLeftStick();
+	PhysBody* CreateRightStick();
 
 	bool SwitchCollisions(PhysBody* Triggerer, bool flag, PhysBody* Trigger, PhysBody* Colliders, ...);
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
-
+	b2Body* stick_left_body;
 private:
 
 	bool debug;
 	b2World* world;
 	b2MouseJoint* mouse_joint;
 	b2Body* ground;
+	b2RevoluteJoint* left_joint;
+	b2RevoluteJoint* right_joint;
+	PhysBody* left_stick;
+	PhysBody* right_stick;
 };

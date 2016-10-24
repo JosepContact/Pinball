@@ -36,26 +36,61 @@ bool ModulePhysics::Start()
 	// needed to create joints like mouse joint
 	b2BodyDef bd;
 	ground = world->CreateBody(&bd);
+	// invisble left and right circles
+	// Left Circle
 
-	// big static circle as "ground" in the middle of the screen
-/*
-	int x = SCREEN_WIDTH / 2;
-	int y = SCREEN_HEIGHT / 1.5f;
-	int diameter = SCREEN_WIDTH / 2;
+	int x = 140;
+	int y = 855;
+	int diameter = 15;
 
-	b2BodyDef body;
-	body.type = b2_staticBody;
-	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	b2BodyDef body_l;
+	body_l.type = b2_staticBody;
+	body_l.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
-	b2Body* big_ball = world->CreateBody(&body);
+	b2Body* left_ball = world->CreateBody(&body_l);
 
-	b2CircleShape shape;
-	shape.m_radius = PIXEL_TO_METERS(diameter) * 0.5f;
+	b2CircleShape shape_l;
+	shape_l.m_radius = PIXEL_TO_METERS(diameter) * 0.5f;
 
-	b2FixtureDef fixture;
-	fixture.shape = &shape;
-	big_ball->CreateFixture(&fixture);
-	*/
+	b2FixtureDef fixture_l;
+	fixture_l.shape = &shape_l;
+	left_ball->CreateFixture(&fixture_l);
+
+	// Set Left Joint bodies
+	stick_left_body = world->CreateBody(&body_l);
+	left_stick = App->physics->CreateLeftStick();
+
+	// Set Left Joint
+
+	b2RevoluteJointDef joint_left_def;
+	joint_left_def.bodyA = App->physics->stick_left_body;
+	joint_left_def.bodyB = left_stick->body;
+	joint_left_def.collideConnected = true;
+	joint_left_def.localAnchorA.Set(PIXEL_TO_METERS(8), 0);
+	joint_left_def.localAnchorB.Set(PIXEL_TO_METERS(-40), PIXEL_TO_METERS(-2));
+	joint_left_def.referenceAngle = 20 * DEGTORAD;
+	joint_left_def.enableLimit = true;
+	joint_left_def.lowerAngle = -40 * DEGTORAD;
+	joint_left_def.upperAngle = 0 * DEGTORAD;
+	joint_left_def.enableMotor = true;
+	left_joint = (b2RevoluteJoint*)world->CreateJoint(&joint_left_def);
+	
+	// Right Circle
+	x = 320;
+	b2BodyDef body_r;
+	body_r.type = b2_staticBody;
+	body_r.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* big_ball = world->CreateBody(&body_r);
+
+	b2CircleShape shape_r;
+	shape_r.m_radius = PIXEL_TO_METERS(diameter) * 0.5f;
+
+	b2FixtureDef fixture_r;
+	fixture_r.shape = &shape_r;
+	big_ball->CreateFixture(&fixture_r);
+
+
 	return true;
 }
 
@@ -188,6 +223,42 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 	return pbody;
 }
 
+PhysBody* ModulePhysics::CreateLeftStick()
+{
+	int x = 188;
+	int y = 875;
+	int width = 80;
+	int height = 20;
+
+	b2BodyDef body;
+	body.type = b2_dynamicBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	body.angle = 25 * DEGTORAD;
+	b2Body* b = world->CreateBody(&body);
+
+	b2PolygonShape shape;
+	shape.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	fixture.density = 1.0f;
+	b->CreateFixture(&fixture);
+
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+	b->SetUserData(pbody);
+	pbody->width = width * 0.5f;
+	pbody->height = height * 0.5f;
+
+
+	return pbody;
+}
+
+PhysBody * ModulePhysics::CreateRightStick()
+{
+	return nullptr;
+}
+
 bool ModulePhysics::SwitchCollisions(PhysBody * Triggerer, bool flag, PhysBody * Trigger, PhysBody * Collider, ...)
 {
 	bool ret = true;
@@ -206,8 +277,18 @@ bool ModulePhysics::SwitchCollisions(PhysBody * Triggerer, bool flag, PhysBody *
 // 
 update_status ModulePhysics::PostUpdate()
 {
-	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) {
 		debug = !debug;
+	}
+
+	left_joint->SetMotorSpeed(800 * DEGTORAD);
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
+		left_joint->EnableMotor(true);
+		left_joint->SetMaxMotorTorque(720);
+		left_joint->SetMotorSpeed(-500 * DEGTORAD);
+	}
+
 
 	if(!debug)
 		return UPDATE_CONTINUE;

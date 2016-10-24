@@ -38,11 +38,10 @@ bool ModuleSceneIntro::Start()
 	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 	
 	// Sensors
-	StartingRampSensor = App->physics->CreateRectangleSensor(325, 80, 1, 40);
-	LoopRampSensor = App->physics->CreateRectangleSensor(225, 150, 40, 1);
-	LoopRampTrigger = App->physics->CreateRectangleSensor(205, 165, 1, 40);
-	TRRampSensor = App->physics->CreateRectangleSensor(320, 310, 60, 1);
-	TRampSensor = App->physics->CreateRectangleSensor(105, 80, 1, 40);
+	StartingRampSensor = App->physics->CreateRectangleSensor(325, 80, 25, 40);
+	LoopRampSensor = App->physics->CreateRectangleSensor(225, 150, 40, 10);
+	LoopRampTrigger = App->physics->CreateRectangleSensor(205, 165, 2, 40);
+	TRRampSensor = App->physics->CreateRectangleSensor(320, 310, 60, 4);
 
 	// Static Bodies
 	// Chains
@@ -68,8 +67,6 @@ bool ModuleSceneIntro::Start()
 	LoopRampTriggered->body->SetType(b2_staticBody);
 	TRRamp = App->physics->CreateChain(0, 0, TRRamp_pts, 160);
 	TRRamp->body->SetType(b2_staticBody);
-	TRamp = App->physics->CreateChain(0, 0, TRamp_pts, 60);
-	TRamp->body->SetType(b2_staticBody);
 
 	// Rectangles
 	GreyBlocker = App->physics->CreateRectangle(280, 80, 3, 40);
@@ -101,7 +98,6 @@ bool ModuleSceneIntro::Start()
 
 	p2List<PhysBody*> DeactivateQue;
 
-	DeactivateQue.add(TRamp);
 	DeactivateQue.add(TRRamp);
 	DeactivateQue.add(BckgroundCol);
 	DeactivateQue.add(TRRed);
@@ -205,10 +201,8 @@ update_status ModuleSceneIntro::Update()
 
 		//TRRamp Switch
 		if (TRRampSensor->Contains(x, y)) {
-			BallisUp = !BallisUp;
-		}
-		if (TRampSensor->Contains(x, y)) {
-			BallisUp = !BallisUp;
+			TRRamp->body->SetActive(true);
+			BallisUp = true;
 		}
 
 		c = c->next;
@@ -257,8 +251,6 @@ update_status ModuleSceneIntro::Update()
 	if (!BallisUp) {
 		App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
 	}
-	
-	// Ground
 	BckgroundCol->body->SetActive(!BallisUp);
 	TRRed->body->SetActive(!BallisUp);
 	TRRampE->body->SetActive(!BallisUp);
@@ -267,11 +259,7 @@ update_status ModuleSceneIntro::Update()
 	for (p2List_item<PhysBody*>* bc = BouncyCircles.getFirst(); bc != NULL; bc = bc->next) {
 	bc->data->body->SetActive(!BallisUp);
 	}
-
-	// Air
-	TRRamp->body->SetActive(BallisUp);
-	TRamp->body->SetActive(BallisUp);
-
+	
 	return UPDATE_CONTINUE;
 }
 
