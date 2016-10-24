@@ -188,7 +188,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 	return pbody;
 }
 
-bool ModulePhysics::SwitchCollisions(PhysBody * Triggerer, bool flag, PhysBody* Trigger, PhysBody * Collider, ...)
+bool ModulePhysics::SwitchCollisions(PhysBody * Triggerer, bool flag, PhysBody * Trigger, PhysBody * Collider, ...)
 {
 	bool ret = true;
 	

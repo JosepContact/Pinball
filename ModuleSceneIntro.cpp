@@ -40,8 +40,10 @@ bool ModuleSceneIntro::Start()
 	// Sensors
 	StartingRampSensor = App->physics->CreateRectangleSensor(325, 80, 25, 40);
 	LoopRampSensor = App->physics->CreateRectangleSensor(225, 150, 40, 25);
+	LoopRampTrigger = App->physics->CreateRectangleSensor(205, 165, 2, 40);
 
 	// Static Bodies
+	// Chains
 	RDTriangle = App->physics->CreateChain(0, 0, RDTriangle_pts, 6);
 	RDTriangle->body->SetType(b2_staticBody);
 	BckgroundCol = App->physics->CreateChain(0, 0, BckgroundCol_pts, 178);
@@ -56,16 +58,29 @@ bool ModuleSceneIntro::Start()
 	TRRed->body->SetType(b2_staticBody);
 	TLRed = App->physics->CreateChain(0, 0, TLRed_pts, 34);
 	TLRed->body->SetType(b2_staticBody);
+	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 54);
+	StartingRamp->body->SetType(b2_staticBody);
+	LoopRampOut = App->physics->CreateChain(0, 0, LoopRampOut_pts, 34);
+	LoopRampOut->body->SetType(b2_staticBody);
+	LoopRampTriggered = App->physics->CreateChain(0, 0, LoopRampTriggered_pts, 34);
+	LoopRampTriggered->body->SetType(b2_staticBody);
+	// Rectangles
+	GreyBlocker = App->physics->CreateRectangle(280, 80, 3, 40);
+	GreyBlocker->body->SetType(b2_staticBody);
+
+	// Circles
+	LoopRampIn = GreyBlocker = App->physics->CreateCircle(191, 193, 17);
+	GreyBlocker->body->SetType(b2_staticBody);
+
+	// Bouncy Bodies
 	BouncyDL = App->physics->CreateChain(0, 0, BouncyDL_pts, 16);
 	BouncyDL->body->SetType(b2_staticBody);
 	BouncyDL->body->GetFixtureList()->SetRestitution(BOUNCY_TRIANGLES_PWR);
 	BouncyDR = App->physics->CreateChain(0, 0, BouncyDR_pts, 14);
 	BouncyDR->body->SetType(b2_staticBody);
 	BouncyDR->body->GetFixtureList()->SetRestitution(BOUNCY_TRIANGLES_PWR);
-	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 54);
-	StartingRamp->body->SetType(b2_staticBody);
-	GreyBlocker = App->physics->CreateRectangle(280, 80, 3, 40);
-	GreyBlocker->body->SetType(b2_staticBody);
+	
+
 
 	// Bouncy Bodies Set Up
 	BouncyCircles.add(App->physics->CreateCircle(305, 275, 31));
@@ -77,8 +92,17 @@ bool ModuleSceneIntro::Start()
 		bc->data->body->GetFixtureList()->SetRestitution(BOUNCY_CIRCLES_PWR);
 	}
 
-	BckgroundCol->body->SetActive(false);
-	TRRed->body->SetActive(false);
+	p2List<PhysBody*> DeactivateQue;
+
+	DeactivateQue.add(BckgroundCol);
+	DeactivateQue.add(TRRed);
+	DeactivateQue.add(LoopRampOut);
+	DeactivateQue.add(LoopRampTriggered);
+
+	for (p2List_item<PhysBody*>* it = DeactivateQue.getFirst(); it != NULL; it = it->next) {
+		it->data->body->SetActive(false);
+	}
+
 	ball_available = true;
 
 	circles.add(App->physics->CreateCircle(471, 870, 11));
@@ -149,14 +173,26 @@ update_status ModuleSceneIntro::Update()
 		int x, y;
 		c->data->GetPosition(x, y);
 		App->renderer->Blit(ball, x, y, NULL, 1.0f, c->data->GetRotation());
+		// StartingRamp Switch
 		if (StartingRampSensor->Contains(x, y)) {
 			StartingRamp->body->SetActive(false);
 			BckgroundCol->body->SetActive(true);
 			TRRed->body->SetActive(true);
 			BallisUp = false;
 		}
-		App->physics->SwitchCollisions(c->data, false, LoopRampSensor, BckgroundCol);
-		//App->physics->SwitchCollisions(c->data, true, LoopRampSensor, ); CAL FER EL COLLIDER DE LA LOOP_RAMP!!!
+		// LoopRampSensor Switch
+		if (LoopRampSensor->Contains(x, y + c->data->height)) {
+			LoopRampOut->body->SetActive(true);
+			BckgroundCol->body->SetActive(false);
+			LoopRampTriggered->body->SetActive(false);
+		}
+		
+		// LoopRampTrigger Switch
+		if (LoopRampTrigger->Contains(x, y)) {
+			LoopRampOut->body->SetActive(false);
+			LoopRampTriggered->body->SetActive(true);
+			BallisUp = true;
+		}
 
 		c = c->next;
 	}
@@ -201,8 +237,12 @@ update_status ModuleSceneIntro::Update()
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
 	}
 	*/
-	if(!BallisUp)
+	if (!BallisUp) {
 		App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
+	}
+	else {
+		BckgroundCol->body->SetActive(false);
+	}
 	return UPDATE_CONTINUE;
 }
 

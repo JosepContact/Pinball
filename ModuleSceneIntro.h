@@ -36,10 +36,14 @@ public:
 	PhysBody* BouncyDL;
 	PhysBody* BouncyDR;
 	PhysBody* StartingRamp;
+	PhysBody* LoopRampOut;
+	PhysBody* LoopRampIn;
+	PhysBody* LoopRampTriggered;
 
 	// Sensors / Triggers
 	PhysBody* StartingRampSensor;
 	PhysBody* LoopRampSensor;
+	PhysBody* LoopRampTrigger;
 
 	PhysBody* sensor;
 	bool sensed;
@@ -61,6 +65,43 @@ private:
 		33, 907,
 		33, 839,
 		138, 909
+	};
+
+	// Pivot 0, 0
+	int LoopRampTriggered_pts[24] = {
+		191, 176,
+		200, 178,
+		209, 188,
+		209, 289,
+		214, 292,
+		236, 292,
+		239, 285,
+		240, 185,
+		230, 166,
+		219, 155,
+		204, 147,
+		192, 146
+	};
+
+	// Pivot 0, 0
+	int LoopRampOut_pts[34] = {
+		240, 124,
+		239, 197,
+		239, 220,
+		222, 237,
+		193, 244,
+		178, 242,
+		162, 233,
+		151, 222,
+		144, 207,
+		143, 185,
+		149, 168,
+		158, 158,
+		171, 149,
+		179, 146,
+		201, 146,
+		210, 149,
+		210, 126
 	};
 
 	// Pivot 0, 0

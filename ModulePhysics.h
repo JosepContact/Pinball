@@ -47,7 +47,7 @@ public:
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, int* points, int size);
 
-	bool SwitchCollisions(PhysBody* Triggerer, bool active, PhysBody* Trigger, PhysBody* Colliders, ...);
+	bool SwitchCollisions(PhysBody* Triggerer, bool flag, PhysBody* Trigger, PhysBody* Colliders, ...);
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
