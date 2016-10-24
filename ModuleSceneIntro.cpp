@@ -47,11 +47,13 @@ bool ModuleSceneIntro::Start()
 	TRRampExit = App->physics->CreateCircle(407, 721, 16);
 	TRRampExit->body->SetType(b2_staticBody);
 	TRRampExit->body->GetFixtureList()->SetSensor(true);
-	TopRampExit = App->physics->CreateCircle(54, 719, 16);
-	TopRampExit->body->SetType(b2_staticBody);
-	TopRampExit->body->GetFixtureList()->SetSensor(true);
-	GridRampSensor = App->physics->CreateRectangleSensor(145, 125, 5, 45);
+	GridRampExitR = App->physics->CreateCircle(54, 719, 16);
+	GridRampExitR->body->SetType(b2_staticBody);
+	GridRampExitR->body->GetFixtureList()->SetSensor(true);
+	GridRampSensor = App->physics->CreateRectangleSensor(145, 127, 5, 40);
+	GridRampExitL = App->physics->CreateRectangleSensor(18, 863, 30, 50);
 	TopRampSensor = App->physics->CreateRectangleSensor(100, 80, 5, 50);
+	TopRampExit = App->physics->CreateRectangleSensor(425, 250, 40, 5);
 
 	// Static Bodies
 	// Chains
@@ -249,13 +251,15 @@ update_status ModuleSceneIntro::Update()
 		if (TRRampSensor->Contains(x, y)) {
 			BallisUp = true;
 		}
-		if (TRRampExit->Contains(x, y) || TopRampExit->Contains(x, y)) {
+		if (TRRampExit->Contains(x, y) || GridRampExitR->Contains(x, y)) {
 			if(BallisUp)
 				c->data->body->SetLinearVelocity({0, 0});
 			BallisUp = false;
 		}
 		if (TopRampSensor->Contains(x, y) || GridRampSensor->Contains(x, y))
 			BallisUp = true;
+		if (GridRampExitL->Contains(x, y) || TopRampExit->Contains(x, y))
+			BallisUp = false;
 
 		c = c->next;
 	}
