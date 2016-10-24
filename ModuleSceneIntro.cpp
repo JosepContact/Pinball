@@ -41,9 +41,17 @@ bool ModuleSceneIntro::Start()
 	
 	// Sensors
 	StartingRampSensor = App->physics->CreateRectangleSensor(325, 80, 25, 40);
-	LoopRampSensor = App->physics->CreateRectangleSensor(225, 150, 40, 10);
-	LoopRampTrigger = App->physics->CreateRectangleSensor(205, 165, 2, 40);
-	TRRampSensor = App->physics->CreateRectangleSensor(320, 310, 60, 4);
+	LoopRampSensor = App->physics->CreateRectangleSensor(225, 150, 40, 5);
+	LoopRampTrigger = App->physics->CreateRectangleSensor(205, 165, 5, 40);
+	TRRampSensor = App->physics->CreateRectangleSensor(320, 310, 60, 5);
+	TRRampExit = App->physics->CreateCircle(407, 721, 16);
+	TRRampExit->body->SetType(b2_staticBody);
+	TRRampExit->body->GetFixtureList()->SetSensor(true);
+	TopRampExit = App->physics->CreateCircle(54, 719, 16);
+	TopRampExit->body->SetType(b2_staticBody);
+	TopRampExit->body->GetFixtureList()->SetSensor(true);
+	GridRampSensor = App->physics->CreateRectangleSensor(145, 125, 5, 45);
+	TopRampSensor = App->physics->CreateRectangleSensor(100, 80, 5, 50);
 
 	// Static Bodies
 	// Chains
@@ -51,6 +59,8 @@ bool ModuleSceneIntro::Start()
 	RDTriangle->body->SetType(b2_staticBody);
 	BckgroundCol = App->physics->CreateChain(0, 0, BckgroundCol_pts, 178);
 	BckgroundCol->body->SetType(b2_staticBody);
+	BckPatch = App->physics->CreateChain(0, 0, BckPatch_pts, 12);
+	BckPatch->body->SetType(b2_staticBody);
 	LShapeL = App->physics->CreateChain(0, 0, LShapeL_pts, 18);
 	LShapeL->body->SetType(b2_staticBody);
 	LShapeR = App->physics->CreateChain(0, 0, LShapeR_pts, 14);
@@ -61,6 +71,7 @@ bool ModuleSceneIntro::Start()
 	TRRed->body->SetType(b2_staticBody);
 	TLRed = App->physics->CreateChain(0, 0, TLRed_pts, 34);
 	TLRed->body->SetType(b2_staticBody);
+	//Ramps
 	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 54);
 	StartingRamp->body->SetType(b2_staticBody);
 	LoopRampOut = App->physics->CreateChain(0, 0, LoopRampOut_pts, 34);
@@ -69,14 +80,20 @@ bool ModuleSceneIntro::Start()
 	LoopRampTriggered->body->SetType(b2_staticBody);
 	TRRamp = App->physics->CreateChain(0, 0, TRRamp_pts, 160);
 	TRRamp->body->SetType(b2_staticBody);
+	TopRamp = App->physics->CreateChain(0, 0, TopRamp_pts, 70);
+	TopRamp->body->SetType(b2_staticBody);
+	GridRamp = App->physics->CreateChain(0, 0, GridRamp_pts, 194);
+	GridRamp->body->SetType(b2_staticBody);
 
 	// Rectangles
-	GreyBlocker = App->physics->CreateRectangle(280, 80, 3, 40);
+	GreyBlocker = App->physics->CreateRectangle(250, 80, 3, 40);
 	GreyBlocker->body->SetType(b2_staticBody);
+	GridRampPatch = App->physics->CreateRectangle(136, 135, 15, 63);
+	GridRampPatch->body->SetType(b2_staticBody);
 
 	// Circles
 	LoopRampIn = GreyBlocker = App->physics->CreateCircle(191, 193, 17);
-	GreyBlocker->body->SetType(b2_staticBody);
+	LoopRampIn->body->SetType(b2_staticBody);
 
 	// Bouncy Bodies
 	BouncyDL = App->physics->CreateChain(0, 0, BouncyDL_pts, 16);
@@ -86,7 +103,25 @@ bool ModuleSceneIntro::Start()
 	BouncyDR->body->SetType(b2_staticBody);
 	BouncyDR->body->GetFixtureList()->SetRestitution(BOUNCY_TRIANGLES_PWR);
 	
-
+	// Red Rectangles
+	uint rrit = 0;
+	// Left
+	RedRectangles.add(App->physics->CreateRectangle(122, 179, 7, 25));
+	RedRectangles.add(App->physics->CreateRectangle(21, 179, 7, 25));
+	RedRectangles.add(App->physics->CreateRectangle(88, 184, 7, 25));
+	RedRectangles.add(App->physics->CreateRectangle(54, 184, 7, 25));
+	// Right												  
+	RedRectangles.add(App->physics->CreateRectangle(305, 139, 7, 25));
+	RedRectangles.add(App->physics->CreateRectangle(271, 139, 7, 25));
+	RedRectangles.add(App->physics->CreateRectangle(339, 139, 7, 25));
+	RedRectangles.add(App->physics->CreateRectangle(373, 139, 7, 25));
+	for (p2List_item<PhysBody*>* rr = RedRectangles.getFirst(); rr != NULL; rr = rr->next) {
+		rr->data->body->SetType(b2_staticBody);
+		if (rrit++ < 4)
+			isUp.add(rr->data);
+		else
+			isDown.add(rr->data);
+	}
 
 	// Bouncy Bodies Set Up
 	BouncyCircles.add(App->physics->CreateCircle(305, 275, 31));
@@ -96,19 +131,31 @@ bool ModuleSceneIntro::Start()
 	for (p2List_item<PhysBody*>* bc = BouncyCircles.getFirst(); bc != NULL; bc = bc->next) {
 		bc->data->body->SetType(b2_staticBody);
 		bc->data->body->GetFixtureList()->SetRestitution(BOUNCY_CIRCLES_PWR);
+		isDown.add(bc->data);
 	}
 
-	p2List<PhysBody*> DeactivateQue;
+	// Setting up Up/Down Layers
+	isUp.add(StartingRamp);
+	isUp.add(LoopRampOut);
+	isUp.add(LoopRampIn);
+	isUp.add(LoopRampTriggered);
+	isUp.add(TRRamp);
+	isUp.add(TopRamp);
+	isUp.add(GridRamp);
 
-	DeactivateQue.add(TRRamp);
-	DeactivateQue.add(BckgroundCol);
-	DeactivateQue.add(TRRed);
-	DeactivateQue.add(LoopRampOut);
-	DeactivateQue.add(LoopRampTriggered);
-
-	for (p2List_item<PhysBody*>* it = DeactivateQue.getFirst(); it != NULL; it = it->next) {
-		it->data->body->SetActive(false);
-	}
+	isDown.add(BckgroundCol);
+	isDown.add(RDTriangle);
+	isDown.add(LShapeL);
+	isDown.add(LShapeR);
+	isDown.add(TRRampE);
+	isDown.add(TRRed);
+	isDown.add(TLRed);
+	isDown.add(GreyBlocker);
+	isDown.add(BouncyDL);
+	isDown.add(BouncyDR);
+	isDown.add(BckPatch);
+	isDown.add(GridRampPatch);
+	// --- Setting Layers
 
 	ball_available = true;
 
@@ -166,16 +213,22 @@ update_status ModuleSceneIntro::Update()
 
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
+	while (c != NULL) {
+		circles.getLast()->data->listener = this;
+		circles.getLast()->data->body->SetFixedRotation(true);
+		circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.3); 
+		c = c->next;
+	}
+
+	c = circles.getFirst();
+
 	while(c != NULL)
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
 		App->renderer->Blit(ball, x, y, NULL, 1.0f, c->data->GetRotation());
 		// StartingRamp Switch
-		if (StartingRampSensor->Contains(x, y)) {
-			StartingRamp->body->SetActive(false);
-			BckgroundCol->body->SetActive(true);
-			TRRed->body->SetActive(true);
+		if (StartingRampSensor->Contains(x, y) && BallisUp) {
 			BallisUp = false;
 		}
 		// LoopRampSensor Switch
@@ -194,9 +247,15 @@ update_status ModuleSceneIntro::Update()
 
 		//TRRamp Switch
 		if (TRRampSensor->Contains(x, y)) {
-			TRRamp->body->SetActive(true);
 			BallisUp = true;
 		}
+		if (TRRampExit->Contains(x, y) || TopRampExit->Contains(x, y)) {
+			if(BallisUp)
+				c->data->body->SetLinearVelocity({0, 0});
+			BallisUp = false;
+		}
+		if (TopRampSensor->Contains(x, y) || GridRampSensor->Contains(x, y))
+			BallisUp = true;
 
 		c = c->next;
 	}
@@ -241,16 +300,15 @@ update_status ModuleSceneIntro::Update()
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
 	}
 	*/
+
 	if (!BallisUp) {
 		App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
 	}
-	BckgroundCol->body->SetActive(!BallisUp);
-	TRRed->body->SetActive(!BallisUp);
-	TRRampE->body->SetActive(!BallisUp);
-	BouncyDR->body->SetActive(!BallisUp);
-	BouncyDL->body->SetActive(!BallisUp);
-	for (p2List_item<PhysBody*>* bc = BouncyCircles.getFirst(); bc != NULL; bc = bc->next) {
-	bc->data->body->SetActive(!BallisUp);
+	for (p2List_item<PhysBody*>* id = isDown.getFirst(); id != NULL; id = id->next) {
+		id->data->body->SetActive(!BallisUp);
+	}
+	for (p2List_item<PhysBody*>* iu = isUp.getFirst(); iu != NULL; iu = iu->next) {
+		iu->data->body->SetActive(BallisUp);
 	}
 	
 	return UPDATE_CONTINUE;

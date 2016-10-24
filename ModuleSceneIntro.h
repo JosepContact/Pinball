@@ -20,11 +20,15 @@ public:
 public:
 	bool BallisUp;
 
+	p2List<PhysBody*> isUp;
+	p2List<PhysBody*> isDown;
+
 	// Bodies
 	p2List<PhysBody*> circles;
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> ricks;
 	p2List<PhysBody*> BouncyCircles;
+	p2List<PhysBody*> RedRectangles;
 	PhysBody* GreyBlocker;
 	PhysBody* RDTriangle;
 	PhysBody* BckgroundCol;
@@ -34,6 +38,10 @@ public:
 	PhysBody* TLRed;
 	PhysBody* BouncyDL;
 	PhysBody* BouncyDR;
+	PhysBody* TopRamp;
+	PhysBody* GridRamp;
+	PhysBody* BckPatch;
+	PhysBody* GridRampPatch;
 
 	//Ramps
 	PhysBody* TRRamp;
@@ -48,6 +56,10 @@ public:
 	PhysBody* LoopRampSensor;
 	PhysBody* LoopRampTrigger;
 	PhysBody* TRRampSensor;
+	PhysBody* TRRampExit;
+	PhysBody* TopRampExit;
+	PhysBody* GridRampSensor;
+	PhysBody* TopRampSensor;
 
 	PhysBody* sensor;
 	bool sensed;
@@ -72,6 +84,156 @@ private:
 		33, 907,
 		33, 839,
 		138, 909
+	};
+
+	// Pivot 0, 0
+	int TopRamp_pts[70] = {
+		87, 106,
+		114, 96,
+		138, 93,
+		165, 94,
+		206, 95,
+		237, 99,
+		278, 107,
+		319, 123,
+		345, 140,
+		367, 154,
+		383, 174,
+		395, 199,
+		405, 232,
+		406, 246,
+		398, 271,
+		390, 286,
+		434, 303,
+		447, 246,
+		443, 219,
+		432, 191,
+		419, 167,
+		400, 147,
+		377, 125,
+		355, 109,
+		329, 96,
+		299, 84,
+		266, 73,
+		238, 66,
+		202, 61,
+		164, 56,
+		131, 56,
+		105, 59,
+		84, 64,
+		70, 72,
+		51, 84
+	};
+
+	// Pivot 0, 0
+	int BckPatch_pts[12] = {
+		97, 104,
+		110, 86,
+		128, 72,
+		147, 64,
+		112, 82,
+		97, 103
+	};
+
+	// Pivot 0, 0
+	int GridRamp_pts[194] = {
+		168, 66,
+		150, 98,
+		122, 107,
+		93, 112,
+		55, 119,
+		23, 121,
+		12, 131,
+		12, 143,
+		12, 160,
+		13, 177,
+		11, 203,
+		13, 228,
+		14, 234,
+		25, 248,
+		34, 256,
+		34, 268,
+		33, 283,
+		34, 307,
+		38, 322,
+		44, 336,
+		51, 341,
+		44, 347,
+		40, 355,
+		34, 367,
+		33, 384,
+		36, 405,
+		44, 419,
+		50, 426,
+		41, 435,
+		35, 446,
+		34, 454,
+		34, 463,
+		35, 477,
+		39, 491,
+		47, 504,
+		50, 511,
+		41, 520,
+		36, 530,
+		34, 544,
+		34, 570,
+		35, 593,
+		29, 604,
+		17, 616,
+		10, 629,
+		7, 648,
+		8, 669,
+		8, 690,
+		8, 718,
+		7, 743,
+		7, 840,
+		-13, 973,
+		37, 966,
+		32, 839,
+		33, 649,
+		37, 633,
+		47, 625,
+		57, 614,
+		64, 602,
+		64, 579,
+		65, 550,
+		66, 531,
+		74, 529,
+		77, 537,
+		78, 553,
+		78, 633,
+		74, 646,
+		63, 659,
+		47, 678,
+		39, 691,
+		38, 735,
+		51, 735,
+		66, 734,
+		66, 704,
+		70, 692,
+		89, 675,
+		103, 661,
+		109, 648,
+		110, 628,
+		109, 536,
+		100, 518,
+		94, 511,
+		99, 497,
+		105, 490,
+		109, 445,
+		96, 426,
+		104, 409,
+		107, 361,
+		94, 340,
+		111, 310,
+		108, 253,
+		126, 233,
+		128, 151,
+		185, 123,
+		196, 112,
+		198, 97,
+		194, 75,
+		182, 67
 	};
 
 	// Pivot 0, 0
