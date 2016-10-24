@@ -54,6 +54,7 @@ public:
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
 	b2Body* stick_left_body;
+	b2Body* stick_right_body;
 private:
 
 	bool debug;

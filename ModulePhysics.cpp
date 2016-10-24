@@ -66,9 +66,9 @@ bool ModulePhysics::Start()
 	joint_left_def.bodyA = App->physics->stick_left_body;
 	joint_left_def.bodyB = left_stick->body;
 	joint_left_def.collideConnected = true;
-	joint_left_def.localAnchorA.Set(PIXEL_TO_METERS(8), 0);
+	joint_left_def.localAnchorA.Set(PIXEL_TO_METERS(0), 0);
 	joint_left_def.localAnchorB.Set(PIXEL_TO_METERS(-40), PIXEL_TO_METERS(-2));
-	joint_left_def.referenceAngle = 20 * DEGTORAD;
+	joint_left_def.referenceAngle = 25 * DEGTORAD;
 	joint_left_def.enableLimit = true;
 	joint_left_def.lowerAngle = -40 * DEGTORAD;
 	joint_left_def.upperAngle = 0 * DEGTORAD;
@@ -81,16 +81,34 @@ bool ModulePhysics::Start()
 	body_r.type = b2_staticBody;
 	body_r.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
-	b2Body* big_ball = world->CreateBody(&body_r);
+	b2Body* right_ball = world->CreateBody(&body_r);
 
 	b2CircleShape shape_r;
 	shape_r.m_radius = PIXEL_TO_METERS(diameter) * 0.5f;
 
 	b2FixtureDef fixture_r;
 	fixture_r.shape = &shape_r;
-	big_ball->CreateFixture(&fixture_r);
+	right_ball->CreateFixture(&fixture_r);
 
+	// Set Right Joint bodies
+	stick_right_body = world->CreateBody(&body_r);
+	right_stick = App->physics->CreateRightStick();
 
+	// Set Right Joint
+	
+	b2RevoluteJointDef joint_right_def;
+	joint_right_def.bodyA = App->physics->stick_right_body;
+	joint_right_def.bodyB = right_stick->body;
+	joint_right_def.collideConnected = true;
+	joint_right_def.localAnchorA.Set(PIXEL_TO_METERS(0), 0);
+	joint_right_def.localAnchorB.Set(PIXEL_TO_METERS(40), PIXEL_TO_METERS(-2));
+	joint_right_def.referenceAngle = -25 * DEGTORAD;
+	joint_right_def.enableLimit = true;
+	joint_right_def.lowerAngle = 0 * DEGTORAD;
+	joint_right_def.upperAngle = 40 * DEGTORAD;
+	joint_right_def.enableMotor = true;
+	right_joint = (b2RevoluteJoint*)world->CreateJoint(&joint_right_def);
+	
 	return true;
 }
 
@@ -225,15 +243,15 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 
 PhysBody* ModulePhysics::CreateLeftStick()
 {
-	int x = 188;
-	int y = 875;
-	int width = 80;
-	int height = 20;
+	int x = 90;
+	int y = 855;
+	int width = 58;
+	int height = 16;
 
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
-	body.angle = 25 * DEGTORAD;
+	body.angle = 30 * DEGTORAD;
 	b2Body* b = world->CreateBody(&body);
 
 	b2PolygonShape shape;
@@ -256,7 +274,33 @@ PhysBody* ModulePhysics::CreateLeftStick()
 
 PhysBody * ModulePhysics::CreateRightStick()
 {
-	return nullptr;
+	int x = 352;
+	int y = 855;
+	int width = 58;
+	int height = 16;
+
+	b2BodyDef body;
+	body.type = b2_dynamicBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	body.angle = -30 * DEGTORAD;
+	b2Body* b = world->CreateBody(&body);
+
+	b2PolygonShape shape;
+	shape.SetAsBox(PIXEL_TO_METERS(width) * 0.5f, PIXEL_TO_METERS(height) * 0.5f);
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	fixture.density = 1.0f;
+	b->CreateFixture(&fixture);
+
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+	b->SetUserData(pbody);
+	pbody->width = width * 0.5f;
+	pbody->height = height * 0.5f;
+
+
+	return pbody;
 }
 
 bool ModulePhysics::SwitchCollisions(PhysBody * Triggerer, bool flag, PhysBody * Trigger, PhysBody * Collider, ...)
@@ -281,12 +325,18 @@ update_status ModulePhysics::PostUpdate()
 		debug = !debug;
 	}
 
-	left_joint->SetMotorSpeed(800 * DEGTORAD);
+	left_joint->SetMotorSpeed(1000 * DEGTORAD);
+	right_joint->SetMotorSpeed(-1000 * DEGTORAD);
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		left_joint->EnableMotor(true);
 		left_joint->SetMaxMotorTorque(720);
-		left_joint->SetMotorSpeed(-500 * DEGTORAD);
+		left_joint->SetMotorSpeed(-800 * DEGTORAD);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+		right_joint->EnableMotor(true);
+		right_joint->SetMaxMotorTorque(720);
+		right_joint->SetMotorSpeed(800 * DEGTORAD);
 	}
 
 
