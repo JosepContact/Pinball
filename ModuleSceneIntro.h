@@ -23,6 +23,17 @@ public:
 	bool end_game;
 	uint ball_count;
 
+	enum lightedUp {
+		L = 0, Ul, V, Il, T,
+		Ww, Iw, Nw,
+		P, O, Wp, E, R, D, Up, Np, K,
+		LCK,
+		TwoP, ThreeP,
+		__LAST
+	};
+
+	bool LightUP[lightedUp::__LAST + 1];
+
 	p2List<PhysBody*> isUp;
 	p2List<PhysBody*> isDown;
 
@@ -54,6 +65,7 @@ public:
 	// Sensors / Triggers
 	PhysBody* StartingRampSensor;
 	PhysBody* TRRampSensor;
+	PhysBody* TRRampSensorOut;
 	PhysBody* TRRampExit;
 	PhysBody* TopRampExit;
 	PhysBody* GridRampSensor;
@@ -87,7 +99,6 @@ private:
 		138, 909
 	};
 
-	// Pivot 0, 0
 	// Pivot 0, 0
 	int TopRamp_pts[54] = {
 		34, 70,

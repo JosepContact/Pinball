@@ -47,6 +47,7 @@ bool ModuleSceneIntro::Start()
 	FailSensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 20, SCREEN_WIDTH, 50);
 	StartingRampSensor = App->physics->CreateRectangleSensor(325, 75, 5, 30);
 	TRRampSensor = App->physics->CreateRectangleSensor(320, 310, 60, 5);
+	TRRampSensorOut = App->physics->CreateRectangleSensor(310, 320, 60, 5);
 	TRRampExit = App->physics->CreateCircle(407, 721, 16);
 	TRRampExit->body->SetType(b2_staticBody);
 	TRRampExit->body->GetFixtureList()->SetSensor(true);
@@ -157,6 +158,7 @@ bool ModuleSceneIntro::Start()
 	circles.getLast()->data->listener = this;
 	circles.getLast()->data->body->SetFixedRotation(true);
 	circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.3);
+	circles.getLast()->data->body->SetBullet(true);
 
 	return ret;
 }
@@ -177,6 +179,7 @@ update_status ModuleSceneIntro::Update()
 	{
 		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 11));
 		circles.getLast()->data->listener = this;
+		circles.getLast()->data->body->SetBullet(true);
 	}
 		
 
@@ -252,7 +255,7 @@ update_status ModuleSceneIntro::Update()
 				c->data->body->SetLinearVelocity({0, 0});
 			BallisUp = false;
 		}
-		if (TopRampSensor->Contains(x + c->data->width, y + c->data->height) || GridRampSensor->Contains(x, y))
+		if (TopRampSensor->Contains(x + c->data->width * 2, y + c->data->height * 2) || GridRampSensor->Contains(x, y))
 			BallisUp = true;
 		if (GridRampExitL->Contains(x, y) || TopRampExit->Contains(x, y))
 			BallisUp = false;
@@ -303,6 +306,53 @@ update_status ModuleSceneIntro::Update()
 
 	if (!BallisUp) {
 		App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
+	}
+
+	for (uint i = lightedUp::L; i < lightedUp::__LAST; i++) {
+		if (LightUP[i]) {
+			switch (i) {
+			case L:
+				break;
+			case Ul:
+				break;
+			case V:
+				break;
+			case Il:
+				break;
+			case T:
+				break;
+			case Ww:
+				break;
+			case Iw:
+				break;
+			case Nw:
+				break;
+			case P:
+				break;
+			case O:
+				break;
+			case Wp:
+				break;
+			case E:
+				break;
+			case R:
+				break;
+			case D:
+				break;
+			case Up:
+				break;
+			case Np:
+				break;
+			case K:
+				break;
+			case LCK:
+				break;
+			case TwoP:
+				break;
+			case ThreeP:
+				break;
+			}
+		}
 	}
 
 	iPoint ball_p;
