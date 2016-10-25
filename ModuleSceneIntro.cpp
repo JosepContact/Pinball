@@ -81,7 +81,7 @@ bool ModuleSceneIntro::Start()
 	StartingRamp->body->SetType(b2_staticBody);
 	TRRamp = App->physics->CreateChain(0, 0, TRRamp_pts, 160);
 	TRRamp->body->SetType(b2_staticBody);
-	TopRamp = App->physics->CreateChain(0, 0, TopRamp_pts, 70);
+	TopRamp = App->physics->CreateChain(0, 0, TopRamp_pts, 54);
 	TopRamp->body->SetType(b2_staticBody);
 	GridRamp = App->physics->CreateChain(0, 0, GridRamp_pts, 172);
 	GridRamp->body->SetType(b2_staticBody);
@@ -252,7 +252,7 @@ update_status ModuleSceneIntro::Update()
 				c->data->body->SetLinearVelocity({0, 0});
 			BallisUp = false;
 		}
-		if (TopRampSensor->Contains(x + c->data->width, y + c->data->height/2) || GridRampSensor->Contains(x, y))
+		if (TopRampSensor->Contains(x + c->data->width, y + c->data->height) || GridRampSensor->Contains(x, y))
 			BallisUp = true;
 		if (GridRampExitL->Contains(x, y) || TopRampExit->Contains(x, y))
 			BallisUp = false;
