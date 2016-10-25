@@ -31,9 +31,11 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
-
 	sprintf_s(score_text, 9, "%d", score);
 	App->fonts->Blit(200, 12, 0, score_text);
+
+	sprintf_s(lifes_text, 2, "%d", lifes);
+	App->fonts->Blit(400, 12, 0, lifes_text);
 
 	return UPDATE_CONTINUE;
 }

@@ -6,6 +6,7 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
+#include "ModulePlayer.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -31,6 +32,8 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	music = App->audio->LoadFx("pinball/music.ogg");
+	kicker_fx = App->audio->LoadFx("pinball/kicker.wav");
 	right_kicker = App->textures->Load("pinball/right_kicker.png");
 	left_kicker = App->textures->Load("pinball/left_kicker.png");
 	foreground = App->textures->Load("pinball/foreground.png");
@@ -160,6 +163,9 @@ bool ModuleSceneIntro::Start()
 	circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.3);
 	circles.getLast()->data->body->SetBullet(true);
 
+	// --- Music Playing
+
+
 	return ret;
 }
 
@@ -260,49 +266,15 @@ update_status ModuleSceneIntro::Update()
 		if (GridRampExitL->Contains(x, y) || TopRampExit->Contains(x, y))
 			BallisUp = false;
 
-		c = c->next;
-	}
+		if (FailSensor->Contains(x, y)) {
+			if (App->player->lifes > 0) {
+				App->player->lifes = App->player->lifes - 1;
+			}
+			
 
-	/*
-	c = boxes.getFirst();
-
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(box, x, y, NULL, 1.0f, c->data->GetRotation());
-		if(ray_on)
-		{
-			int hit = c->data->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);
-			if(hit >= 0)
-				ray_hit = hit;
 		}
 		c = c->next;
 	}
-
-	c = ricks.getFirst();
-
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(rick, x, y, NULL, 1.0f, c->data->GetRotation());
-		c = c->next;
-	}
-
-	// ray -----------------
-	if(ray_on == true)
-	{
-		fVector destination(mouse.x-ray.x, mouse.y-ray.y);
-		destination.Normalize();
-		destination *= ray_hit;
-
-		App->renderer->DrawLine(ray.x, ray.y, ray.x + destination.x, ray.y + destination.y, 255, 255, 255);
-
-		if(normal.x != 0.0f)
-			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
-	}
-	*/
 
 	if (!BallisUp) {
 		App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
@@ -367,7 +339,18 @@ update_status ModuleSceneIntro::Update()
 	for (p2List_item<PhysBody*>* iu = isUp.getFirst(); iu != NULL; iu = iu->next) {
 		iu->data->body->SetActive(BallisUp);
 	}
-	
+	// FX EFFECTS --------------------------------------------
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
+	App->audio->PlayFx(kicker_fx);
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
+		App->audio->PlayFx(kicker_fx);
+
+	if (music_playing == false) {
+		App->audio->PlayFx(music, -1);
+		music_playing = true;
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -375,7 +358,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
 
-	App->audio->PlayFx(bonus_fx);
+	
 
 	/*
 	if(bodyA)

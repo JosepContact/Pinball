@@ -91,6 +91,13 @@ public:
 	p2Point<int> ray;
 	bool ray_on;
 
+	//FX
+	uint kicker_fx;
+	// Music is a fx because LoadMus was not working properly (distortion sounds)
+	uint music;
+	bool music_playing = false;
+
+
 private:
 	// Pivot 0, 0
 	int RDTriangle_pts[6] = {
