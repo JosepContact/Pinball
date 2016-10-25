@@ -341,12 +341,12 @@ update_status ModulePhysics::PostUpdate()
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		left_joint->EnableMotor(true);
 		left_joint->SetMaxMotorTorque(720);
-		left_joint->SetMotorSpeed(-15);
+		left_joint->SetMotorSpeed(-25);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
 		right_joint->EnableMotor(true);
 		right_joint->SetMaxMotorTorque(720);
-		right_joint->SetMotorSpeed(15);
+		right_joint->SetMotorSpeed(25);
 	}
 
 	if(!debug)

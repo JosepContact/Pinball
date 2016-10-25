@@ -23,6 +23,10 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
+	Dead = false;
+	end_game = false;
+	ball_count = 3;
+
 	BallisUp = true;
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
@@ -40,9 +44,8 @@ bool ModuleSceneIntro::Start()
 	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 	
 	// Sensors
-	StartingRampSensor = App->physics->CreateRectangleSensor(325, 80, 25, 40);
-	LoopRampSensor = App->physics->CreateRectangleSensor(225, 150, 40, 5);
-	LoopRampTrigger = App->physics->CreateRectangleSensor(205, 165, 5, 40);
+	FailSensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 20, SCREEN_WIDTH, 50);
+	StartingRampSensor = App->physics->CreateRectangleSensor(325, 75, 5, 30);
 	TRRampSensor = App->physics->CreateRectangleSensor(320, 310, 60, 5);
 	TRRampExit = App->physics->CreateCircle(407, 721, 16);
 	TRRampExit->body->SetType(b2_staticBody);
@@ -52,7 +55,7 @@ bool ModuleSceneIntro::Start()
 	GridRampExitR->body->GetFixtureList()->SetSensor(true);
 	GridRampSensor = App->physics->CreateRectangleSensor(145, 127, 5, 40);
 	GridRampExitL = App->physics->CreateRectangleSensor(18, 863, 30, 50);
-	TopRampSensor = App->physics->CreateRectangleSensor(100, 80, 5, 50);
+	TopRampSensor = App->physics->CreateRectangleSensor(92, 80, 5, 40);
 	TopRampExit = App->physics->CreateRectangleSensor(425, 250, 40, 5);
 
 	// Static Bodies
@@ -74,17 +77,13 @@ bool ModuleSceneIntro::Start()
 	TLRed = App->physics->CreateChain(0, 0, TLRed_pts, 34);
 	TLRed->body->SetType(b2_staticBody);
 	//Ramps
-	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 54);
+	StartingRamp = App->physics->CreateChain(0, 0, StartingRamp_pts, 50);
 	StartingRamp->body->SetType(b2_staticBody);
-	LoopRampOut = App->physics->CreateChain(0, 0, LoopRampOut_pts, 34);
-	LoopRampOut->body->SetType(b2_staticBody);
-	LoopRampTriggered = App->physics->CreateChain(0, 0, LoopRampTriggered_pts, 34);
-	LoopRampTriggered->body->SetType(b2_staticBody);
 	TRRamp = App->physics->CreateChain(0, 0, TRRamp_pts, 160);
 	TRRamp->body->SetType(b2_staticBody);
 	TopRamp = App->physics->CreateChain(0, 0, TopRamp_pts, 70);
 	TopRamp->body->SetType(b2_staticBody);
-	GridRamp = App->physics->CreateChain(0, 0, GridRamp_pts, 194);
+	GridRamp = App->physics->CreateChain(0, 0, GridRamp_pts, 172);
 	GridRamp->body->SetType(b2_staticBody);
 
 	// Rectangles
@@ -92,10 +91,6 @@ bool ModuleSceneIntro::Start()
 	GreyBlocker->body->SetType(b2_staticBody);
 	GridRampPatch = App->physics->CreateRectangle(136, 135, 15, 63);
 	GridRampPatch->body->SetType(b2_staticBody);
-
-	// Circles
-	LoopRampIn = GreyBlocker = App->physics->CreateCircle(191, 193, 17);
-	LoopRampIn->body->SetType(b2_staticBody);
 
 	// Bouncy Bodies
 	BouncyDL = App->physics->CreateChain(0, 0, BouncyDL_pts, 16);
@@ -138,9 +133,6 @@ bool ModuleSceneIntro::Start()
 
 	// Setting up Up/Down Layers
 	isUp.add(StartingRamp);
-	isUp.add(LoopRampOut);
-	isUp.add(LoopRampIn);
-	isUp.add(LoopRampTriggered);
 	isUp.add(TRRamp);
 	isUp.add(TopRamp);
 	isUp.add(GridRamp);
@@ -233,30 +225,34 @@ update_status ModuleSceneIntro::Update()
 		if (StartingRampSensor->Contains(x, y) && BallisUp) {
 			BallisUp = false;
 		}
-		// LoopRampSensor Switch
-		//if (LoopRampSensor->Contains(x, y + c->data->height)) {
-		//	LoopRampOut->body->SetActive(true);
-		//	BckgroundCol->body->SetActive(false);
-		//	LoopRampTriggered->body->SetActive(false);
-		//}
-		//
-		//// LoopRampTrigger Switch
-		//if (LoopRampTrigger->Contains(x, y)) {
-		//	LoopRampOut->body->SetActive(false);
-		//	LoopRampTriggered->body->SetActive(true);
-		//	BallisUp = true;
-		//}
+		/*
+		FAIL DETECTION
+		if (FailSensor->Contains(x, y + c->data->height / 2)) {
+			if (ball_count > 0) {
+				//Dead = true;
+				ball_count--;
+				c->data->body->SetLinearVelocity({ 0, 0 });
+				c->data->body->SetTransform({471, 70}, 0);
+				ball_available = true;
+				BallisUp = true;
+			}
+			else {
+				end_game = true;
+				c->data->body->Dump();
+			}
+		}
+		*/
 
 		//TRRamp Switch
 		if (TRRampSensor->Contains(x, y)) {
 			BallisUp = true;
 		}
-		if (TRRampExit->Contains(x, y) || GridRampExitR->Contains(x, y)) {
+		if (TRRampExit->Contains(x, y) || GridRampExitR->Contains(x, y + c->data->height / 3)) {
 			if(BallisUp)
 				c->data->body->SetLinearVelocity({0, 0});
 			BallisUp = false;
 		}
-		if (TopRampSensor->Contains(x, y) || GridRampSensor->Contains(x, y))
+		if (TopRampSensor->Contains(x + c->data->width, y + c->data->height/2) || GridRampSensor->Contains(x, y))
 			BallisUp = true;
 		if (GridRampExitL->Contains(x, y) || TopRampExit->Contains(x, y))
 			BallisUp = false;
@@ -308,6 +304,13 @@ update_status ModuleSceneIntro::Update()
 	if (!BallisUp) {
 		App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
 	}
+
+	iPoint ball_p;
+	circles.getLast()->data->GetPosition(ball_p.x, ball_p.y);
+
+	if (!BallisUp && ball_p.x < 115)
+		App->renderer->DrawCircle(ball_p.x + circles.getLast()->data->width, ball_p.y + circles.getLast()->data->height, 11, 255, 255, 255);
+
 	for (p2List_item<PhysBody*>* id = isDown.getFirst(); id != NULL; id = id->next) {
 		id->data->body->SetActive(!BallisUp);
 	}
