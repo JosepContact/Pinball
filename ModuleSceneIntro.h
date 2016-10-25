@@ -60,6 +60,8 @@ public:
 	PhysBody* TopRampExit;
 	PhysBody* GridRampSensor;
 	PhysBody* TopRampSensor;
+	PhysBody* GridRampExitL;
+	PhysBody* GridRampExitR;
 
 	PhysBody* sensor;
 	bool sensed;

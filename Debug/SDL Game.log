@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿Build started 25/10/2016 17:10:11.
      1>Project "D:\CITM\DDVII\Physics II\pamezclar\SDL Game.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
@@ -34,3 +35,9 @@
 Build succeeded.
 
 Time Elapsed 00:00:01.47
+=======
+﻿  Application.cpp
+c:\program files (x86)\microsoft visual studio 14.0\vc\include\limits(210): warning C4577: 'noexcept' used with no exception handling mode specified; termination on exception is not guaranteed. Specify /EHsc
+  SDL Game.vcxproj -> C:\Users\Usuario\Documents\GitHub\Pinball\Debug\2D Physics - class 4.exe
+  SDL Game.vcxproj -> C:\Users\Usuario\Documents\GitHub\Pinball\Debug\2D Physics - class 4.pdb (Full PDB)
+>>>>>>> origin/master
