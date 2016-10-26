@@ -17,7 +17,9 @@ public:
 	int font_score = -1;
 	char score_text[10];
 	char lifes_text[10];
+	char highscore_text[10];
 
+	uint highscore = 0;
 	uint score = 0;
 	uint lifes = 5;
 };

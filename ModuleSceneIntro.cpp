@@ -320,6 +320,17 @@ update_status ModuleSceneIntro::Update()
 		circles.getLast()->data->body->GetLocalPoint(point);
 		circles.getLast()->data->body->ApplyForce(b2Vec2(-4, 0), point, true);
 	}
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN && App->player->lifes == 0)
+	{
+		App->player->lifes = 5;
+		if (App->player->score > App->player->highscore)
+			App->player->highscore = App->player->score;
+
+		App->player->score = 0;
+		BallisUp = true;
+		ball_available = true;
+		AddBall();
+	}
 
 	// Prepare for raycast ------------------------------------------------------
 	
@@ -411,7 +422,7 @@ update_status ModuleSceneIntro::Update()
 		App->audio->PlayFx(kicker_fx);
 
 	if (music_playing == false) {
-		App->audio->PlayFx(music, -1);
+		//App->audio->PlayFx(music, -1);
 		music_playing = true;
 	}
 
@@ -444,10 +455,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			App->player->lifes = App->player->lifes - 1;
 			App->audio->PlayFx(fail_fx);
-			if (App->player->lifes == 0) {
-				// GAME OVER
-			}
-			else {
+			if (App->player->lifes != 0) {
 				ball_available = true;
 				end_game = true;
 			}
