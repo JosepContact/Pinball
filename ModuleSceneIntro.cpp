@@ -169,6 +169,7 @@ bool ModuleSceneIntro::Start()
 	isDown.add(BouncyDR);
 	isDown.add(BckPatch);
 	isDown.add(GridRampPatch);
+	isDown.add(BBPatch);
 
 	// --- Setting Layers
 
@@ -356,16 +357,22 @@ update_status ModuleSceneIntro::Update()
 		}
 		
 		//TRRamp Switch
-		if (TRRampSensor->Contains(x + c->data->width, y + 3)) {
+		if (TRRampSensor->Contains(x + c->data->width, y)) {
 			BallisUp = true;
+			c->data->body->SetLinearVelocity({15, 70});
 		}
 		if (TRRampExit->Contains(x, y) || GridRampExitR->Contains(x, y + c->data->height / 3)) {
 			if(BallisUp)
 				c->data->body->SetLinearVelocity({0, 0});
 			BallisUp = false;
 		}
-		if (TopRampSensor->Contains(x + c->data->width * 2, y + 3) || GridRampSensor->Contains(x, y))
+		if (TopRampSensor->Contains(x + c->data->width * 2, y + c->data->height)) {
 			BallisUp = true;
+			c->data->body->SetLinearVelocity({ 20, 5 });
+		}
+		if(GridRampSensor->Contains(x, y)) {
+			BallisUp = true;
+		}
 		if (TopRampExit->Contains(x, y))
 			BallisUp = false;
 		if (GridRampExitL->Contains(x, y) && BallisUp == true)

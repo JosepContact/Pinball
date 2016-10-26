@@ -13,7 +13,6 @@ enum lightnum {
 	Ww, Iw, Nw,
 	LCK,
 	TwoP, ThreeP,
-	BB1, BB2, BB3,
 	__LAST
 };
 
