@@ -6,6 +6,14 @@
 
 class PhysBody;
 
+struct LightBoost {
+	bool isLighted;
+	PhysBody* sensor;
+	iPoint pos;
+	SDL_Rect* rect;
+	SDL_Texture* tex;
+};
+
 class ModuleSceneIntro : public Module
 {
 public:
@@ -22,17 +30,6 @@ public:
 	bool Dead;
 	bool end_game;
 	uint ball_count;
-
-	enum lightedUp {
-		L = 0, Ul, V, Il, T,
-		Ww, Iw, Nw,
-		P, O, Wp, E, R, D, Up, Np, K,
-		LCK,
-		TwoP, ThreeP,
-		__LAST
-	};
-
-	bool LightUP[lightedUp::__LAST + 1];
 
 	p2List<PhysBody*> isUp;
 	p2List<PhysBody*> isDown;
@@ -61,6 +58,8 @@ public:
 	PhysBody* StartingRamp;
 	PhysBody* TopRamp;
 	PhysBody* GridRamp;
+
+	p2List<LightBoost> lightboosts;
 
 	// Sensors / Triggers
 	PhysBody* StartingRampSensor;
@@ -107,34 +106,54 @@ private:
 	};
 
 	// Pivot 0, 0
-	int TopRamp_pts[54] = {
-		34, 70,
-		118, 51,
-		191, 57,
-		241, 67,
-		276, 77,
-		319, 89,
-		354, 109,
-		384, 131,
-		407, 151,
-		425, 174,
-		440, 212,
-		446, 241,
-		445, 270,
-		446, 305,
-		375, 308,
-		405, 250,
-		404, 223,
-		397, 199,
-		377, 167,
-		350, 143,
-		317, 121,
-		283, 111,
-		232, 98,
-		181, 94,
-		126, 95,
-		103, 97,
-		79, 112
+	int TopRamp_pts[94] = {
+		28, 108,
+		46, 89,
+		62, 76,
+		88, 62,
+		103, 59,
+		115, 56,
+		130, 56,
+		146, 55,
+		165, 57,
+		185, 58,
+		201, 61,
+		219, 63,
+		246, 68,
+		267, 71,
+		291, 80,
+		323, 92,
+		345, 103,
+		364, 115,
+		386, 131,
+		401, 146,
+		420, 168,
+		432, 184,
+		439, 211,
+		446, 237,
+		446, 247,
+		446, 262,
+		439, 287,
+		396, 278,
+		407, 247,
+		403, 225,
+		397, 207,
+		391, 190,
+		374, 165,
+		359, 149,
+		340, 137,
+		322, 126,
+		307, 116,
+		281, 110,
+		266, 103,
+		237, 97,
+		218, 96,
+		204, 96,
+		181, 95,
+		157, 92,
+		128, 93,
+		102, 96,
+		88, 105
 	};
 
 	// Pivot 0, 0

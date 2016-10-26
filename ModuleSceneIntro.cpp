@@ -45,12 +45,12 @@ bool ModuleSceneIntro::Start()
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	
 	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
-	
 	// Sensors
 	FailSensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 20, SCREEN_WIDTH, 50);
 	StartingRampSensor = App->physics->CreateRectangleSensor(325, 75, 5, 30);
-	TRRampSensor = App->physics->CreateRectangleSensor(320, 310, 60, 5);
-	TRRampSensorOut = App->physics->CreateRectangleSensor(310, 320, 60, 5);
+	TRRampSensor = App->physics->CreateRectangleSensor(320, 320, 60, 15);
+	TRRampSensor->body->SetTransform(TRRampSensor->body->GetPosition(), DEGTORAD * 15);
+	//TRRampSensorOut = App->physics->CreateRectangleSensor(310, 320, 60, 5);
 	TRRampExit = App->physics->CreateCircle(407, 721, 16);
 	TRRampExit->body->SetType(b2_staticBody);
 	TRRampExit->body->GetFixtureList()->SetSensor(true);
@@ -59,7 +59,7 @@ bool ModuleSceneIntro::Start()
 	GridRampExitR->body->GetFixtureList()->SetSensor(true);
 	GridRampSensor = App->physics->CreateRectangleSensor(145, 127, 5, 40);
 	GridRampExitL = App->physics->CreateRectangleSensor(18, 863, 30, 50);
-	TopRampSensor = App->physics->CreateRectangleSensor(92, 80, 5, 40);
+	TopRampSensor = App->physics->CreateRectangleSensor(92, 80, 5, 60);
 	TopRampExit = App->physics->CreateRectangleSensor(425, 250, 40, 5);
 
 	// Static Bodies
@@ -85,7 +85,7 @@ bool ModuleSceneIntro::Start()
 	StartingRamp->body->SetType(b2_staticBody);
 	TRRamp = App->physics->CreateChain(0, 0, TRRamp_pts, 160);
 	TRRamp->body->SetType(b2_staticBody);
-	TopRamp = App->physics->CreateChain(0, 0, TopRamp_pts, 54);
+	TopRamp = App->physics->CreateChain(0, 0, TopRamp_pts, 94);
 	TopRamp->body->SetType(b2_staticBody);
 	GridRamp = App->physics->CreateChain(0, 0, GridRamp_pts, 172);
 	GridRamp->body->SetType(b2_staticBody);
@@ -186,6 +186,8 @@ update_status ModuleSceneIntro::Update()
 		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 11));
 		circles.getLast()->data->listener = this;
 		circles.getLast()->data->body->SetBullet(true);
+		circles.getLast()->data->body->SetFixedRotation(true);
+		circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.3); 
 	}
 		
 
@@ -214,12 +216,10 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(left_kicker, 69, 802, NULL, 1.0f, App->physics->left_rotation - 2);
 	App->renderer->Blit(right_kicker, 253, 802, NULL, 1.0f, App->physics->right_rotation + 2);
 
+
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
 	while (c != NULL) {
-		circles.getLast()->data->listener = this;
-		circles.getLast()->data->body->SetFixedRotation(true);
-		circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.3); 
 		c = c->next;
 	}
 
@@ -234,11 +234,15 @@ update_status ModuleSceneIntro::Update()
 		if (StartingRampSensor->Contains(x, y) && BallisUp) {
 			BallisUp = false;
 		}
+		
 		/*
-		FAIL DETECTION
+		if (Dead == true && x == 471 && y == 70) {
+			Dead = false;
+		}
+
 		if (FailSensor->Contains(x, y + c->data->height / 2)) {
-			if (ball_count > 0) {
-				//Dead = true;
+			if (ball_count > 0 && Dead == false) {
+				Dead = true;
 				ball_count--;
 				c->data->body->SetLinearVelocity({ 0, 0 });
 				c->data->body->SetTransform({471, 70}, 0);
@@ -253,7 +257,7 @@ update_status ModuleSceneIntro::Update()
 		*/
 
 		//TRRamp Switch
-		if (TRRampSensor->Contains(x, y)) {
+		if (TRRampSensor->Contains(x + c->data->width, y)) {
 			BallisUp = true;
 		}
 		if (TRRampExit->Contains(x, y) || GridRampExitR->Contains(x, y + c->data->height / 3)) {
@@ -261,7 +265,7 @@ update_status ModuleSceneIntro::Update()
 				c->data->body->SetLinearVelocity({0, 0});
 			BallisUp = false;
 		}
-		if (TopRampSensor->Contains(x + c->data->width * 2, y + c->data->height * 2) || GridRampSensor->Contains(x, y))
+		if (TopRampSensor->Contains(x + c->data->width * 2, y) || GridRampSensor->Contains(x, y))
 			BallisUp = true;
 		if (GridRampExitL->Contains(x, y) || TopRampExit->Contains(x, y))
 			BallisUp = false;
@@ -271,6 +275,18 @@ update_status ModuleSceneIntro::Update()
 				App->player->lifes = App->player->lifes - 1;
 			}
 			
+		p2List_item<LightBoost>* lb = lightboosts.getFirst();
+
+		while (lb != NULL) {
+			if (lb->data.sensor->Contains(x + c->data->width, y + c->data->height)) {
+				lb->data.isLighted = true;
+			}
+			if (lb->data.isLighted == true) {
+				App->renderer->Blit(lb->data.tex, lb->data.pos.x, lb->data.pos.y, lb->data.rect);
+			}
+
+			lb = lb->next;
+		}
 
 		}
 		c = c->next;
@@ -278,53 +294,6 @@ update_status ModuleSceneIntro::Update()
 
 	if (!BallisUp) {
 		App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
-	}
-
-	for (uint i = lightedUp::L; i < lightedUp::__LAST; i++) {
-		if (LightUP[i]) {
-			switch (i) {
-			case L:
-				break;
-			case Ul:
-				break;
-			case V:
-				break;
-			case Il:
-				break;
-			case T:
-				break;
-			case Ww:
-				break;
-			case Iw:
-				break;
-			case Nw:
-				break;
-			case P:
-				break;
-			case O:
-				break;
-			case Wp:
-				break;
-			case E:
-				break;
-			case R:
-				break;
-			case D:
-				break;
-			case Up:
-				break;
-			case Np:
-				break;
-			case K:
-				break;
-			case LCK:
-				break;
-			case TwoP:
-				break;
-			case ThreeP:
-				break;
-			}
-		}
 	}
 
 	iPoint ball_p;
@@ -357,8 +326,6 @@ update_status ModuleSceneIntro::Update()
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
-
-	
 
 	/*
 	if(bodyA)
