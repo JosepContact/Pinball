@@ -72,22 +72,9 @@ bool ModuleSceneIntro::Start()
 	
 	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 	// Sensors
-	FailSensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 20, SCREEN_WIDTH, 50);
-	FailSensor->listener = this;
-	StartingRampSensor = App->physics->CreateRectangleSensor(325, 75, 5, 30);
-	TRRampSensor = App->physics->CreateRectangleSensor(320, 320, 60, 15);
-	TRRampSensor->body->SetTransform(TRRampSensor->body->GetPosition(), DEGTORAD * 15);
-	//TRRampSensorOut = App->physics->CreateRectangleSensor(310, 320, 60, 5);
-	TRRampExit = App->physics->CreateCircle(407, 721, 16);
-	TRRampExit->body->SetType(b2_staticBody);
-	TRRampExit->body->GetFixtureList()->SetSensor(true);
-	GridRampExitR = App->physics->CreateCircle(54, 719, 16);
-	GridRampExitR->body->SetType(b2_staticBody);
-	GridRampExitR->body->GetFixtureList()->SetSensor(true);
-	GridRampSensor = App->physics->CreateRectangleSensor(145, 127, 5, 40);
-	GridRampExitL = App->physics->CreateRectangleSensor(18, 863, 30, 50);
-	TopRampSensor = App->physics->CreateRectangleSensor(92, 80, 5, 60);
-	TopRampExit = App->physics->CreateRectangleSensor(425, 250, 40, 5);
+	SetSensors();
+
+	
 
 	// Static Bodies
 	// Chains
@@ -152,9 +139,9 @@ bool ModuleSceneIntro::Start()
 	}
 
 	// Bouncy Bodies Set Up
-	BouncyCircles.add(App->physics->CreateCircle(305, 275, 31));
-	BouncyCircles.add(App->physics->CreateCircle(268, 206, 31));
-	BouncyCircles.add(App->physics->CreateCircle(370, 214, 31));
+	BouncyCircles.add(App->physics->CreateCircle(305, 275, 30));
+	BouncyCircles.add(App->physics->CreateCircle(268, 206, 30));
+	BouncyCircles.add(App->physics->CreateCircle(370, 214, 30));
 
 	for (p2List_item<PhysBody*>* bc = BouncyCircles.getFirst(); bc != NULL; bc = bc->next) {
 		bc->data->listener = this;
@@ -265,11 +252,7 @@ bool ModuleSceneIntro::Start()
 
 	ball_available = true;
 
-	circles.add(App->physics->CreateCircle(471, 870, 11));
-	circles.getLast()->data->listener = this;
-	circles.getLast()->data->body->SetFixedRotation(true);
-	circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.3);
-	circles.getLast()->data->body->SetBullet(true);
+	AddBall();
 
 	// --- Music Playing
 
@@ -288,7 +271,7 @@ bool ModuleSceneIntro::CleanUp()
 
 update_status ModuleSceneIntro::Update()
 {
-
+	// INPUT ---------------------------
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
 		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 11));
@@ -307,6 +290,18 @@ update_status ModuleSceneIntro::Update()
 			circles.getLast()->data->listener = this;
 			ball_available = false;
 		
+	}
+	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN && circles.count() > 0)
+	{
+		b2Vec2 point;
+		circles.getLast()->data->body->GetLocalPoint(point);
+		circles.getLast()->data->body->ApplyForce(b2Vec2(4, 0), point, true);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN && circles.count() > 0)
+	{
+		b2Vec2 point;
+		circles.getLast()->data->body->GetLocalPoint(point);
+		circles.getLast()->data->body->ApplyForce(b2Vec2(-4, 0), point, true);
 	}
 
 	// Prepare for raycast ------------------------------------------------------
@@ -348,8 +343,15 @@ update_status ModuleSceneIntro::Update()
 		}
 		if (TopRampSensor->Contains(x + c->data->width * 2, y) || GridRampSensor->Contains(x, y))
 			BallisUp = true;
-		if (GridRampExitL->Contains(x, y) || TopRampExit->Contains(x, y))
+		if (TopRampExit->Contains(x, y))
 			BallisUp = false;
+		if (GridRampExitL->Contains(x, y) && BallisUp == true)
+		{
+			b2Vec2 point;
+			circles.getLast()->data->body->GetLocalPoint(point);
+			circles.getLast()->data->body->ApplyForce(b2Vec2(0, -200), point, true);
+			BallisUp = false;
+		}
 
 		for (int i = 0; i < lightnum::__LAST; i++) {
 			if (lightboosts[i].sensor->Contains(x + c->data->width, y + c->data->height)) {
@@ -396,6 +398,14 @@ update_status ModuleSceneIntro::Update()
 		music_playing = true;
 	}
 
+	// CHECK END GAME --------------------------------------
+	if (end_game == true) {
+		AddBall();
+		SetSensors();
+		end_game = false;
+		BallisUp = true;
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -417,6 +427,43 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			App->player->lifes = App->player->lifes - 1;
 			App->audio->PlayFx(fail_fx);
+			if (App->player->lifes == 0) {
+				// GAME OVER
+			}
+			else {
+				ball_available = true;
+				end_game = true;
+			}
 		}
 	}
 }
+
+void ModuleSceneIntro::AddBall()
+{
+	circles.add(App->physics->CreateCircle(471, 870, 11));
+	circles.getLast()->data->listener = this;
+	circles.getLast()->data->body->SetFixedRotation(true);
+	circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.25);
+	circles.getLast()->data->body->SetBullet(true);
+}
+
+void ModuleSceneIntro::SetSensors()
+{
+	FailSensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 20, SCREEN_WIDTH, 50);
+	FailSensor->listener = this;
+	StartingRampSensor = App->physics->CreateRectangleSensor(325, 75, 5, 30);
+	TRRampSensor = App->physics->CreateRectangleSensor(320, 320, 60, 15);
+	TRRampSensor->body->SetTransform(TRRampSensor->body->GetPosition(), DEGTORAD * 15);
+	//TRRampSensorOut = App->physics->CreateRectangleSensor(310, 320, 60, 5);
+	TRRampExit = App->physics->CreateCircle(407, 721, 16);
+	TRRampExit->body->SetType(b2_staticBody);
+	TRRampExit->body->GetFixtureList()->SetSensor(true);
+	GridRampExitR = App->physics->CreateCircle(54, 719, 16);
+	GridRampExitR->body->SetType(b2_staticBody);
+	GridRampExitR->body->GetFixtureList()->SetSensor(true);
+	GridRampSensor = App->physics->CreateRectangleSensor(145, 127, 5, 40);
+	GridRampExitL = App->physics->CreateRectangleSensor(18, 870, 30, 10);
+	TopRampSensor = App->physics->CreateRectangleSensor(92, 80, 5, 60);
+	TopRampExit = App->physics->CreateRectangleSensor(425, 250, 40, 5);
+}
+
