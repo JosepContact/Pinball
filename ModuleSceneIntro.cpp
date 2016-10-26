@@ -32,8 +32,6 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	music = App->audio->LoadFx("pinball/music.ogg");
-	kicker_fx = App->audio->LoadFx("pinball/kicker.wav");
 	right_kicker = App->textures->Load("pinball/right_kicker.png");
 	left_kicker = App->textures->Load("pinball/left_kicker.png");
 	foreground = App->textures->Load("pinball/foreground.png");
@@ -43,7 +41,13 @@ bool ModuleSceneIntro::Start()
 	box = App->textures->Load("pinball/crate.png");
 	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
-	lb_tex = App->textures->Load("pinball/Lights/LightedUpBG.png");
+
+	// Loading FX
+	music = App->audio->LoadFx("pinball/music.ogg");
+	kicker_fx = App->audio->LoadFx("pinball/kicker.wav");
+	bouncy_fx = App->audio->LoadFx("pinball/bouncy_ball.wav");
+	fail_fx = App->audio->LoadFx("pinball/fail.wav");
+	
 	lightboosts[Ll].tex = App->textures->Load("pinball/Lights/Ll.png");
 	lightboosts[Ul].tex = App->textures->Load("pinball/Lights/Uu.png");
 	lightboosts[Vl].tex = App->textures->Load("pinball/Lights/Vv.png");
@@ -64,10 +68,12 @@ bool ModuleSceneIntro::Start()
 	lightboosts[LCK].tex = App->textures->Load("pinball/Lights/LCK.png");
 	lightboosts[TwoP].tex = App->textures->Load("pinball/Lights/2p.png");
 	lightboosts[ThreeP].tex = App->textures->Load("pinball/Lights/3p.png");
+
 	
 	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 	// Sensors
 	FailSensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 20, SCREEN_WIDTH, 50);
+	FailSensor->listener = this;
 	StartingRampSensor = App->physics->CreateRectangleSensor(325, 75, 5, 30);
 	TRRampSensor = App->physics->CreateRectangleSensor(320, 320, 60, 15);
 	TRRampSensor->body->SetTransform(TRRampSensor->body->GetPosition(), DEGTORAD * 15);
@@ -151,6 +157,7 @@ bool ModuleSceneIntro::Start()
 	BouncyCircles.add(App->physics->CreateCircle(370, 214, 31));
 
 	for (p2List_item<PhysBody*>* bc = BouncyCircles.getFirst(); bc != NULL; bc = bc->next) {
+		bc->data->listener = this;
 		bc->data->body->SetType(b2_staticBody);
 		bc->data->body->GetFixtureList()->SetRestitution(BOUNCY_CIRCLES_PWR);
 		isDown.add(bc->data);
@@ -330,28 +337,7 @@ update_status ModuleSceneIntro::Update()
 			BallisUp = false;
 		}
 		
-		/*
-		if (Dead == true && x == 471 && y == 70) {
-			Dead = false;
-		}
-
-		if (FailSensor->Contains(x, y + c->data->height / 2)) {
-			if (ball_count > 0 && Dead == false) {
-				Dead = true;
-				ball_count--;
-				c->data->body->SetLinearVelocity({ 0, 0 });
-				c->data->body->SetTransform({471, 70}, 0);
-				ball_available = true;
-				BallisUp = true;
-			}
-			else {
-				end_game = true;
-				c->data->body->Dump();
-			}
-		}
-		*/
-
-		//Ramp Switching
+		//TRRamp Switch
 		if (TRRampSensor->Contains(x + c->data->width, y)) {
 			BallisUp = true;
 		}
@@ -365,18 +351,12 @@ update_status ModuleSceneIntro::Update()
 		if (GridRampExitL->Contains(x, y) || TopRampExit->Contains(x, y))
 			BallisUp = false;
 
-		if (FailSensor->Contains(x, y)) {
-			if (App->player->lifes > 0) {
-				App->player->lifes = App->player->lifes - 1;
-			}
-		}
-
 		for (int i = 0; i < lightnum::__LAST; i++) {
 			if (lightboosts[i].sensor->Contains(x + c->data->width, y + c->data->height)) {
 				lightboosts[i].isLighted = true;
 			}
 		}
-
+	
 		c = c->next;
 	}
 
@@ -423,16 +403,20 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
 
-	/*
-	if(bodyA)
-	{
-		bodyA->GetPosition(x, y);
-		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
+	for (p2List_item<PhysBody*>* bc = BouncyCircles.getFirst(); bc != NULL; bc = bc->next) {
+		if (bodyA == bc->data)
+		{
+			App->audio->PlayFx(bouncy_fx);
+			App->player->score += 10;
+		}
 	}
 
-	if(bodyB)
+	if (FailSensor->body == bodyA->body && bodyB->body == circles.getLast()->data->body)
 	{
-		bodyB->GetPosition(x, y);
-		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
-	}*/
+		if (App->player->lifes > 0)
+		{
+			App->player->lifes = App->player->lifes - 1;
+			App->audio->PlayFx(fail_fx);
+		}
+	}
 }
