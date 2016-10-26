@@ -43,6 +43,27 @@ bool ModuleSceneIntro::Start()
 	box = App->textures->Load("pinball/crate.png");
 	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
+	lb_tex = App->textures->Load("pinball/Lights/LightedUpBG.png");
+	lightboosts[Ll].tex = App->textures->Load("pinball/Lights/Ll.png");
+	lightboosts[Ul].tex = App->textures->Load("pinball/Lights/Uu.png");
+	lightboosts[Vl].tex = App->textures->Load("pinball/Lights/Vv.png");
+	lightboosts[Il].tex = App->textures->Load("pinball/Lights/Ii.png");
+	lightboosts[Tl].tex = App->textures->Load("pinball/Lights/Tt.png");
+	lightboosts[Pp].tex = App->textures->Load("pinball/Lights/P.png");
+	lightboosts[Op].tex = App->textures->Load("pinball/Lights/o.png");
+	lightboosts[Wp].tex = App->textures->Load("pinball/Lights/w.png");
+	lightboosts[Ep].tex = App->textures->Load("pinball/Lights/e.png");
+	lightboosts[Rp].tex = App->textures->Load("pinball/Lights/r.png");
+	lightboosts[Dp].tex = App->textures->Load("pinball/Lights/d.png");
+	lightboosts[Up].tex = App->textures->Load("pinball/Lights/u.png");
+	lightboosts[Np].tex = App->textures->Load("pinball/Lights/n.png");
+	lightboosts[Kp].tex = App->textures->Load("pinball/Lights/k.png");
+	lightboosts[Ww].tex = App->textures->Load("pinball/Lights/Ww.png");
+	lightboosts[Iw].tex = App->textures->Load("pinball/Lights/Ii.png");
+	lightboosts[Nw].tex = App->textures->Load("pinball/Lights/Nn.png");
+	lightboosts[LCK].tex = App->textures->Load("pinball/Lights/LCK.png");
+	lightboosts[TwoP].tex = App->textures->Load("pinball/Lights/2p.png");
+	lightboosts[ThreeP].tex = App->textures->Load("pinball/Lights/3p.png");
 	
 	//sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 	// Sensors
@@ -155,6 +176,86 @@ bool ModuleSceneIntro::Start()
 	isDown.add(GridRampPatch);
 	// --- Setting Layers
 
+	// Light Boosts
+
+	for (int i = 0; i < lightnum::__LAST - 1; i++) {
+		lightboosts[i].isLighted = false;
+		lightboosts[i].rect.x = 0;
+		lightboosts[i].rect.y = 0;
+	}
+
+	lightboosts[Ll].isLighted = true;
+	lightboosts[Ll].rect.w = 27;
+	lightboosts[Ll].rect.h = 27;
+	lightboosts[Ll].pos = { 100, 200 };
+
+	lightboosts[Ul].rect.w = 27;
+	lightboosts[Ul].rect.h = 27;
+
+	lightboosts[Vl].rect.w = 27;
+	lightboosts[Vl].rect.h = 27;
+
+	lightboosts[Il].rect.w = 27;
+	lightboosts[Il].rect.h = 27;
+
+	lightboosts[Tl].rect.w = 27;
+	lightboosts[Tl].rect.h = 27;
+
+	lightboosts[Pp].rect.w = 42;
+	lightboosts[Pp].rect.h = 36;
+
+	lightboosts[Op].rect.w = 43;
+	lightboosts[Op].rect.h = 34;
+
+	lightboosts[Wp].rect.w = 43;
+	lightboosts[Wp].rect.h = 34;
+
+	lightboosts[Ep].rect.w = 35;
+	lightboosts[Ep].rect.h = 46;
+
+	lightboosts[Rp].rect.w = 35;
+	lightboosts[Rp].rect.h = 46;
+
+	lightboosts[Dp].rect.w = 35;
+	lightboosts[Dp].rect.h = 46;
+
+	lightboosts[Up].rect.w = 35;
+	lightboosts[Up].rect.h = 46;
+
+	lightboosts[Np].rect.w = 47;
+	lightboosts[Np].rect.h = 33;
+
+	lightboosts[Kp].rect.w = 47;
+	lightboosts[Kp].rect.h = 33;
+
+	lightboosts[Ww].rect.w = 27;
+	lightboosts[Ww].rect.h = 27;
+
+	lightboosts[Iw].rect.w = 27;
+	lightboosts[Iw].rect.h = 27;
+
+	lightboosts[Nw].rect.w = 27;
+	lightboosts[Nw].rect.h = 27;
+
+	lightboosts[LCK].rect.w = 57;
+	lightboosts[LCK].rect.h = 48;
+
+	lightboosts[TwoP].rect.w = 37;
+	lightboosts[TwoP].rect.h = 59;
+	
+	lightboosts[ThreeP].rect.w = 36;
+	lightboosts[ThreeP].rect.h = 57;
+	// --- Light Boosts
+
+	// Light Boosts Sensors
+	
+	for (int i = 0; i < lightnum::__LAST; i++) {
+		LightBoost* lb = &lightboosts[i];
+		lb->sensor = App->physics->CreateRectangleSensor(lb->pos.x + lb->rect.w / 2, lb->pos.y + lb->rect.h / 2, lb->rect.w, lb->rect.h);
+	}
+
+	// ---
+
 	ball_available = true;
 
 	circles.add(App->physics->CreateCircle(471, 870, 11));
@@ -219,12 +320,6 @@ update_status ModuleSceneIntro::Update()
 
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
-	while (c != NULL) {
-		c = c->next;
-	}
-
-	c = circles.getFirst();
-
 	while(c != NULL)
 	{
 		int x, y;
@@ -256,7 +351,7 @@ update_status ModuleSceneIntro::Update()
 		}
 		*/
 
-		//TRRamp Switch
+		//Ramp Switching
 		if (TRRampSensor->Contains(x + c->data->width, y)) {
 			BallisUp = true;
 		}
@@ -274,21 +369,14 @@ update_status ModuleSceneIntro::Update()
 			if (App->player->lifes > 0) {
 				App->player->lifes = App->player->lifes - 1;
 			}
-			
-		p2List_item<LightBoost>* lb = lightboosts.getFirst();
-
-		while (lb != NULL) {
-			if (lb->data.sensor->Contains(x + c->data->width, y + c->data->height)) {
-				lb->data.isLighted = true;
-			}
-			if (lb->data.isLighted == true) {
-				App->renderer->Blit(lb->data.tex, lb->data.pos.x, lb->data.pos.y, lb->data.rect);
-			}
-
-			lb = lb->next;
 		}
 
+		for (int i = 0; i < lightnum::__LAST; i++) {
+			if (lightboosts[i].sensor->Contains(x + c->data->width, y + c->data->height)) {
+				lightboosts[i].isLighted = true;
+			}
 		}
+
 		c = c->next;
 	}
 
@@ -296,11 +384,19 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(foreground, 0, 0, NULL, 0, 0);
 	}
 
+
 	iPoint ball_p;
 	circles.getLast()->data->GetPosition(ball_p.x, ball_p.y);
 
 	if (!BallisUp && ball_p.x < 115)
 		App->renderer->DrawCircle(ball_p.x + circles.getLast()->data->width, ball_p.y + circles.getLast()->data->height, 11, 255, 255, 255);
+
+
+	for (int i = 0; i < lightnum::__LAST; i++) {
+		if (lightboosts[i].isLighted == true) {
+			App->renderer->Blit(lightboosts[i].tex, lightboosts[i].pos.x, lightboosts[i].pos.y, &lightboosts[i].rect);
+		}
+	}
 
 	for (p2List_item<PhysBody*>* id = isDown.getFirst(); id != NULL; id = id->next) {
 		id->data->body->SetActive(!BallisUp);

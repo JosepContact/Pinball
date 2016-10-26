@@ -3,14 +3,24 @@
 #include "p2List.h"
 #include "p2Point.h"
 #include "Globals.h"
+#include "p2DynArray.h"
 
 class PhysBody;
+
+enum lightnum {
+	Ll = 0, Ul, Vl, Il, Tl,
+	Pp, Op, Wp, Ep, Rp, Dp, Up, Np, Kp,
+	Ww, Iw, Nw,
+	LCK,
+	TwoP, ThreeP,
+	__LAST
+};
 
 struct LightBoost {
 	bool isLighted;
 	PhysBody* sensor;
 	iPoint pos;
-	SDL_Rect* rect;
+	SDL_Rect rect;
 	SDL_Texture* tex;
 };
 
@@ -59,7 +69,7 @@ public:
 	PhysBody* TopRamp;
 	PhysBody* GridRamp;
 
-	p2List<LightBoost> lightboosts;
+	LightBoost lightboosts[__LAST];
 
 	// Sensors / Triggers
 	PhysBody* StartingRampSensor;
@@ -78,6 +88,7 @@ public:
 	bool ball_available;
 	// Textures
 
+	SDL_Texture* lb_tex;
 	SDL_Texture* left_kicker;
 	SDL_Texture* right_kicker;
 	SDL_Texture* background;
