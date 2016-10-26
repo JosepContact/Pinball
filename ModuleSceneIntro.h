@@ -92,6 +92,8 @@ public:
 
 	//FX
 	uint kicker_fx;
+	uint bouncy_fx;
+	uint fail_fx;
 	// Music is a fx because LoadMus was not working properly (distortion sounds)
 	uint music;
 	bool music_playing = false;
