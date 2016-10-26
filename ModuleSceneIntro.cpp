@@ -107,6 +107,8 @@ bool ModuleSceneIntro::Start()
 	GreyBlocker->body->SetType(b2_staticBody);
 	GridRampPatch = App->physics->CreateRectangle(136, 135, 15, 63);
 	GridRampPatch->body->SetType(b2_staticBody);
+	BBPatch = App->physics->CreateRectangle(390, 160, 10, 50);
+	BBPatch->body->SetType(b2_staticBody);
 
 	// Bouncy Bodies
 	BouncyDL = App->physics->CreateChain(0, 0, BouncyDL_pts, 16);

@@ -54,6 +54,7 @@ public:
 	p2List<PhysBody*> BouncyCircles;
 	p2List<PhysBody*> RedRectangles;
 	PhysBody* GreyBlocker;
+	PhysBody* BBPatch;
 	PhysBody* RDTriangle;
 	PhysBody* BckgroundCol;
 	PhysBody* LShapeL;
