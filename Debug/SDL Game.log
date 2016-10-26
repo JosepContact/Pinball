@@ -1,4 +1,4 @@
-﻿Build started 26/10/2016 22:14:18.
+﻿Build started 26/10/2016 22:31:35.
      1>Project "D:\CITM\DDVII\Physics II\Morefinished pinball\SDL Game.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          D:\VisualStudio2015\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt Application.cpp Main.cpp ModuleAudio.cpp ModuleFonts.cpp ModuleInput.cpp ModulePhysics.cpp ModulePlayer.cpp ModuleRender.cpp ModuleSceneIntro.cpp ModuleTextures.cpp ModuleWindow.cpp log.cpp
@@ -55,4 +55,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:05.21
+Time Elapsed 00:00:05.96
