@@ -13,6 +13,7 @@ enum lightnum {
 	Ww, Iw, Nw,
 	LCK,
 	TwoP, ThreeP,
+	BB1, BB2, BB3,
 	__LAST
 };
 
@@ -53,6 +54,7 @@ public:
 	p2List<PhysBody*> BouncyCircles;
 	p2List<PhysBody*> RedRectangles;
 	PhysBody* GreyBlocker;
+	PhysBody* BBPatch;
 	PhysBody* RDTriangle;
 	PhysBody* BckgroundCol;
 	PhysBody* LShapeL;

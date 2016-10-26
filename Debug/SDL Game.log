@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿Build started 26/10/2016 20:52:24.
      1>Project "D:\CITM\DDVII\Physics II\pamezclar\SDL Game.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
@@ -26,3 +27,12 @@
 Build succeeded.
 
 Time Elapsed 00:00:00.91
+=======
+﻿  ModuleSceneIntro.cpp
+c:\users\usuario\documents\github\pinball\modulesceneintro.cpp(300): warning C4305: 'argument': truncation from 'double' to 'float32'
+c:\users\usuario\documents\github\pinball\modulesceneintro.cpp(432): warning C4101: 'y': unreferenced local variable
+c:\users\usuario\documents\github\pinball\modulesceneintro.cpp(432): warning C4101: 'x': unreferenced local variable
+c:\program files (x86)\microsoft visual studio 14.0\vc\include\limits(210): warning C4577: 'noexcept' used with no exception handling mode specified; termination on exception is not guaranteed. Specify /EHsc
+  SDL Game.vcxproj -> C:\Users\Usuario\Documents\GitHub\Pinball\Debug\2D Physics - class 4.exe
+  SDL Game.vcxproj -> C:\Users\Usuario\Documents\GitHub\Pinball\Debug\2D Physics - class 4.pdb (Full PDB)
+>>>>>>> origin/master

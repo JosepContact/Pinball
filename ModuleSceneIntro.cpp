@@ -74,8 +74,6 @@ bool ModuleSceneIntro::Start()
 	// Sensors
 	SetSensors();
 
-	
-
 	// Static Bodies
 	// Chains
 	RDTriangle = App->physics->CreateChain(0, 0, RDTriangle_pts, 6);
@@ -109,6 +107,8 @@ bool ModuleSceneIntro::Start()
 	GreyBlocker->body->SetType(b2_staticBody);
 	GridRampPatch = App->physics->CreateRectangle(136, 135, 15, 63);
 	GridRampPatch->body->SetType(b2_staticBody);
+	BBPatch = App->physics->CreateRectangle(390, 160, 10, 50);
+	BBPatch->body->SetType(b2_staticBody);
 
 	// Bouncy Bodies
 	BouncyDL = App->physics->CreateChain(0, 0, BouncyDL_pts, 16);
@@ -168,6 +168,7 @@ bool ModuleSceneIntro::Start()
 	isDown.add(BouncyDR);
 	isDown.add(BckPatch);
 	isDown.add(GridRampPatch);
+
 	// --- Setting Layers
 
 	// Light Boosts
@@ -177,6 +178,7 @@ bool ModuleSceneIntro::Start()
 		lightboosts[i].rect.x = 0;
 		lightboosts[i].rect.y = 0;
 	}
+
 	lightboosts[Ll].rect.w = 27;
 	lightboosts[Ll].rect.h = 27;
 	lightboosts[Ll].pos = { 22, 217 };
@@ -351,13 +353,12 @@ update_status ModuleSceneIntro::Update()
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
 	while(c != NULL)
-	{
-		
-		for (int i = 0; i < lightnum::__LAST; i++) {
-			if (lightboosts[i].isLighted == true) {
-				App->renderer->Blit(lightboosts[i].tex, lightboosts[i].pos.x, lightboosts[i].pos.y, &lightboosts[i].rect);
-			}
+	{	
+	for (int i = 0; i < lightnum::__LAST; i++) {
+		if (lightboosts[i].isLighted == true) {
+			App->renderer->Blit(lightboosts[i].tex, lightboosts[i].pos.x, lightboosts[i].pos.y, &lightboosts[i].rect);
 		}
+	}
 
 		int x, y;
 		c->data->GetPosition(x, y);
@@ -368,7 +369,7 @@ update_status ModuleSceneIntro::Update()
 		}
 		
 		//TRRamp Switch
-		if (TRRampSensor->Contains(x + c->data->width, y)) {
+		if (TRRampSensor->Contains(x + c->data->width, y + 3)) {
 			BallisUp = true;
 		}
 		if (TRRampExit->Contains(x, y) || GridRampExitR->Contains(x, y + c->data->height / 3)) {
@@ -376,7 +377,7 @@ update_status ModuleSceneIntro::Update()
 				c->data->body->SetLinearVelocity({0, 0});
 			BallisUp = false;
 		}
-		if (TopRampSensor->Contains(x + c->data->width * 2, y) || GridRampSensor->Contains(x, y))
+		if (TopRampSensor->Contains(x + c->data->width * 2, y + 3) || GridRampSensor->Contains(x, y))
 			BallisUp = true;
 		if (TopRampExit->Contains(x, y))
 			BallisUp = false;
@@ -479,7 +480,6 @@ void ModuleSceneIntro::SetSensors()
 	StartingRampSensor = App->physics->CreateRectangleSensor(325, 75, 5, 30);
 	TRRampSensor = App->physics->CreateRectangleSensor(320, 320, 60, 15);
 	TRRampSensor->body->SetTransform(TRRampSensor->body->GetPosition(), DEGTORAD * 15);
-	//TRRampSensorOut = App->physics->CreateRectangleSensor(310, 320, 60, 5);
 	TRRampExit = App->physics->CreateCircle(407, 721, 16);
 	TRRampExit->body->SetType(b2_staticBody);
 	TRRampExit->body->GetFixtureList()->SetSensor(true);
