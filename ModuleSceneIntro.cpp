@@ -32,6 +32,7 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	spring = App->textures->Load("pinball/spring.png");
 	right_kicker = App->textures->Load("pinball/right_kicker.png");
 	left_kicker = App->textures->Load("pinball/left_kicker.png");
 	foreground = App->textures->Load("pinball/foreground.png");
@@ -269,8 +270,6 @@ bool ModuleSceneIntro::Start()
 
 	// ---
 
-	ball_available = true;
-
 	AddBall();
 
 	// --- Music Playing
@@ -299,17 +298,6 @@ update_status ModuleSceneIntro::Update()
 		circles.getLast()->data->body->SetFixedRotation(true);
 		circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.3); 
 	}
-		
-
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && circles.count() > 0 && ball_available == true)
-	{
-			b2Vec2 point;
-			circles.getLast()->data->body->GetLocalPoint(point);
-			circles.getLast()->data->body->ApplyForce(b2Vec2(0, -160), point, true);
-			circles.getLast()->data->listener = this;
-			ball_available = false;
-		
-	}
 	if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN && circles.count() > 0)
 	{
 		b2Vec2 point;
@@ -330,7 +318,6 @@ update_status ModuleSceneIntro::Update()
 
 		App->player->score = 0;
 		BallisUp = true;
-		ball_available = true;
 		AddBall();
 	}
 
@@ -394,7 +381,11 @@ update_status ModuleSceneIntro::Update()
 				lightboosts[i].isLighted = true;
 			}
 		}
-	
+		if (StartingBall->Contains(x, y)) {
+			ball_available = true;
+		}
+		else ball_available = false;
+
 		c = c->next;
 	}
 
@@ -415,6 +406,29 @@ update_status ModuleSceneIntro::Update()
 	for (p2List_item<PhysBody*>* iu = isUp.getFirst(); iu != NULL; iu = iu->next) {
 		iu->data->body->SetActive(BallisUp);
 	}
+	
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && circles.count() > 0 && ball_available == true)
+	{
+		spring_y += 0.5f;
+		App->renderer->Blit(spring, spring_x, spring_y, NULL, 0, 0);
+		ball_force -= 2;
+	}
+	else {
+		spring_y = 884.0f;
+		App->renderer->Blit(spring, spring_x, spring_y, NULL, 0, 0);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP && circles.count() > 0 && ball_available == true) {
+
+		b2Vec2 point;
+		circles.getLast()->data->body->GetLocalPoint(point);
+		if (ball_force < -160)
+		circles.getLast()->data->body->ApplyForce(b2Vec2(0, -160), point, true);
+		else circles.getLast()->data->body->ApplyForce(b2Vec2(0, ball_force), point, true);
+		circles.getLast()->data->listener = this;
+	}
+	
+	
+
 	// FX EFFECTS --------------------------------------------
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
@@ -423,7 +437,7 @@ update_status ModuleSceneIntro::Update()
 		App->audio->PlayFx(kicker_fx);
 
 	if (music_playing == false) {
-		//App->audio->PlayFx(music, -1);
+		App->audio->PlayFx(music, -1);
 		music_playing = true;
 	}
 
@@ -446,7 +460,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA == bc->data)
 		{
 			App->audio->PlayFx(bouncy_fx);
-			App->player->score += 10;
+			App->player->score += 100;
 		}
 	}
 
@@ -457,7 +471,6 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			App->player->lifes = App->player->lifes - 1;
 			App->audio->PlayFx(fail_fx);
 			if (App->player->lifes != 0) {
-				ball_available = true;
 				end_game = true;
 			}
 		}
@@ -469,12 +482,13 @@ void ModuleSceneIntro::AddBall()
 	circles.add(App->physics->CreateCircle(471, 870, 11));
 	circles.getLast()->data->listener = this;
 	circles.getLast()->data->body->SetFixedRotation(true);
-	circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.25);
+	circles.getLast()->data->body->GetFixtureList()->SetRestitution(0.5);
 	circles.getLast()->data->body->SetBullet(true);
 }
 
 void ModuleSceneIntro::SetSensors()
 {
+	StartingBall = FailSensor = App->physics->CreateRectangleSensor(467, 867, 35, 35);
 	FailSensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 20, SCREEN_WIDTH, 50);
 	FailSensor->listener = this;
 	StartingRampSensor = App->physics->CreateRectangleSensor(325, 75, 5, 30);

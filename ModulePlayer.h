@@ -21,5 +21,5 @@ public:
 
 	uint highscore = 0;
 	uint score = 0;
-	uint lifes = 5;
+	uint lifes = 4;
 };

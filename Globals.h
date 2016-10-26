@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-#define BOUNCY_CIRCLES_PWR 1.3f
+#define BOUNCY_CIRCLES_PWR 1.4f
 #define BOUNCY_TRIANGLES_PWR 1.4f
 
 #define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);

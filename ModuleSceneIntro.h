@@ -76,6 +76,7 @@ public:
 	LightBoost lightboosts[__LAST];
 
 	// Sensors / Triggers
+	PhysBody* StartingBall;
 	PhysBody* StartingRampSensor;
 	PhysBody* TRRampSensor;
 	PhysBody* TRRampSensorOut;
@@ -91,6 +92,7 @@ public:
 	bool sensed;
 	bool ball_available;
 	// Textures
+	SDL_Texture* spring;
 	SDL_Texture* left_kicker;
 	SDL_Texture* right_kicker;
 	SDL_Texture* background;
@@ -102,7 +104,8 @@ public:
 	uint bonus_fx;
 	p2Point<int> ray;
 	bool ray_on;
-
+	float spring_x = 457.0f, spring_y = 884.0f;
+	int ball_force = 0;
 	//FX
 	uint kicker_fx;
 	uint bouncy_fx;
