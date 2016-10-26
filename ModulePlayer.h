@@ -18,6 +18,8 @@ public:
 	char score_text[10];
 	char lifes_text[10];
 	char highscore_text[10];
+	int scorex2 = 1;
+
 
 	uint highscore = 0;
 	uint score = 0;

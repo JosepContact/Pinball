@@ -115,9 +115,11 @@ bool ModuleSceneIntro::Start()
 	BouncyDL = App->physics->CreateChain(0, 0, BouncyDL_pts, 16);
 	BouncyDL->body->SetType(b2_staticBody);
 	BouncyDL->body->GetFixtureList()->SetRestitution(BOUNCY_TRIANGLES_PWR);
+	BouncyDL->listener = this;
 	BouncyDR = App->physics->CreateChain(0, 0, BouncyDR_pts, 14);
 	BouncyDR->body->SetType(b2_staticBody);
 	BouncyDR->body->GetFixtureList()->SetRestitution(BOUNCY_TRIANGLES_PWR);
+	BouncyDR->listener = this;
 	
 	// Red Rectangles
 	uint rrit = 0;
@@ -188,7 +190,6 @@ bool ModuleSceneIntro::Start()
 	lightboosts[Ul].rect.w = 27;
 	lightboosts[Ul].rect.h = 27;
 	lightboosts[Ul].pos = { 57, 217 };
-
 	lightboosts[Vl].rect.w = 27;
 	lightboosts[Vl].rect.h = 27;
 	lightboosts[Vl].pos = { 92, 216 };
@@ -317,6 +318,7 @@ update_status ModuleSceneIntro::Update()
 		if (App->player->score > App->player->highscore)
 			App->player->highscore = App->player->score;
 
+		App->player->scorex2 = 1;
 		App->player->score = 0;
 		BallisUp = true;
 		AddBall();
@@ -455,6 +457,28 @@ update_status ModuleSceneIntro::Update()
 		end_game = false;
 		BallisUp = true;
 	}
+	// SCORE -----------------------------------------------
+	if (lightboosts[Ww].isLighted && lightboosts[Iw].isLighted && lightboosts[Nw].isLighted) {
+		App->player->score += 100000 * App->player->scorex2;
+		lightboosts[Ww].isLighted = false;
+		lightboosts[Iw].isLighted = false;
+		lightboosts[Nw].isLighted = false;
+	}
+	if (lightboosts[Ll].isLighted && lightboosts[Ul].isLighted && lightboosts[Vl].isLighted) {
+		App->player->score += 100000 * App->player->scorex2;
+		lightboosts[Ll].isLighted = false;
+		lightboosts[Ul].isLighted = false;
+		lightboosts[Vl].isLighted = false;
+	}
+	if (lightboosts[Il].isLighted && lightboosts[Tl].isLighted) {
+		App->player->score += 50000 * App->player->scorex2;
+		lightboosts[Il].isLighted = false;
+		lightboosts[Tl].isLighted = false;
+	}
+
+	if (lightboosts[Pp].isLighted && lightboosts[Op].isLighted && lightboosts[Wp].isLighted && lightboosts[Ep].isLighted && lightboosts[Rp].isLighted && lightboosts[Dp].isLighted && lightboosts[Up].isLighted && lightboosts[Np].isLighted && lightboosts[Kp].isLighted) {
+		App->player->scorex2 = 2;
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -467,7 +491,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA == bc->data)
 		{
 			App->audio->PlayFx(bouncy_fx);
-			App->player->score += 100;
+			App->player->score += 100 * App->player->scorex2;
 		}
 	}
 
@@ -482,6 +506,10 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			}
 		}
 	}
+	if (BouncyDR == bodyA || BouncyDL == bodyA) {
+		App->player->score += 1000 * App->player->scorex2;
+	}
+
 }
 
 void ModuleSceneIntro::AddBall()
