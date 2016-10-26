@@ -263,9 +263,21 @@ bool ModuleSceneIntro::Start()
 	// --- Light Boosts
 
 	// Light Boosts Sensors
+
+	lightboosts[Pp].sensor = App->physics->CreateRectangleSensor(30, 536, 20, 20);
+	lightboosts[Op].sensor = App->physics->CreateRectangleSensor(34, 506, 20, 20);
+	lightboosts[Wp].sensor = App->physics->CreateRectangleSensor(48, 478, 20, 20);
+	lightboosts[Ep].sensor = App->physics->CreateRectangleSensor(119, 416, 20, 20);
+	lightboosts[Rp].sensor = App->physics->CreateRectangleSensor(203, 405, 20, 20);
+	lightboosts[Dp].sensor = App->physics->CreateRectangleSensor(238, 410, 20, 20);
+	lightboosts[Up].sensor = App->physics->CreateRectangleSensor(343, 410, 20, 20);
+	lightboosts[Np].sensor = App->physics->CreateRectangleSensor(422, 523, 20, 20);
+	lightboosts[Kp].sensor = App->physics->CreateRectangleSensor(432, 556, 20, 20);
+	lightboosts[LCK].sensor = App->physics->CreateRectangleSensor(420, 450, 20, 20);
 	
 	for (int i = 0; i < lightnum::__LAST; i++) {
 		LightBoost* lb = &lightboosts[i];
+		if(!(i>=Pp && i<=Kp || i == LCK))
 		lb->sensor = App->physics->CreateRectangleSensor(lb->pos.x + lb->rect.w / 2, lb->pos.y + lb->rect.h / 2, lb->rect.w, lb->rect.h);
 	}
 
@@ -291,7 +303,7 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::Update()
 {
 	// INPUT ---------------------------
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN && App->physics->debug == true)
 	{
 		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 11));
 		circles.getLast()->data->listener = this;
@@ -359,7 +371,7 @@ update_status ModuleSceneIntro::Update()
 		//TRRamp Switch
 		if (TRRampSensor->Contains(x + c->data->width, y)) {
 			BallisUp = true;
-			c->data->body->SetLinearVelocity({15, 70});
+			c->data->body->SetLinearVelocity({0, -30});
 		}
 		if (TRRampExit->Contains(x, y) || GridRampExitR->Contains(x, y + c->data->height / 3)) {
 			if(BallisUp)
@@ -368,7 +380,7 @@ update_status ModuleSceneIntro::Update()
 		}
 		if (TopRampSensor->Contains(x + c->data->width * 2, y + c->data->height)) {
 			BallisUp = true;
-			c->data->body->SetLinearVelocity({ 20, 5 });
+			c->data->body->SetLinearVelocity({ 20, -5 });
 		}
 		if(GridRampSensor->Contains(x, y)) {
 			BallisUp = true;
@@ -385,7 +397,17 @@ update_status ModuleSceneIntro::Update()
 
 		for (int i = 0; i < lightnum::__LAST; i++) {
 			if (lightboosts[i].sensor->Contains(x + c->data->width, y + c->data->height)) {
-				lightboosts[i].isLighted = true;
+				if (i >= Ll && i <= Tl) {
+					if(BallisUp)
+						lightboosts[i].isLighted = true;
+				}
+				else {
+					if(BallisUp == false)
+						lightboosts[i].isLighted = true;
+					}
+				if (i == LCK && BallisUp == false) {
+					c->data->body->SetLinearVelocity({ - 10, 10 });
+				}
 			}
 		}
 		if (StartingBall->Contains(x, y)) {

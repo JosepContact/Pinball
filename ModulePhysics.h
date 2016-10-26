@@ -59,9 +59,10 @@ public:
 	// public rotations for the Blit
 	float left_rotation = 0;
 	float right_rotation = 0;
+public:
+	bool debug;
 private:
 
-	bool debug;
 	b2World* world;
 	b2MouseJoint* mouse_joint;
 	b2Body* ground;
