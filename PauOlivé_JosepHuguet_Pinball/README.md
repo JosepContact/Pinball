@@ -8,7 +8,6 @@ Pau Olivé Rubio
 Josep Huguet Giron
 
 Pinball repository: https://github.com/JosepUPC/Pinball
-Pinball release: 
 
 ##Controls:
 
@@ -18,3 +17,4 @@ Down arrow to push the ball with the spring.
 'H' to see the highest score.
 'N' or 'M' to slightly shake the ball.
 'F1' to see debug.
+	- '1' to spawn ball on mouse position.
