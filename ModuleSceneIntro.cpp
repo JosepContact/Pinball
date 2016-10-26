@@ -57,7 +57,7 @@ bool ModuleSceneIntro::Start()
 	lightboosts[Op].tex = App->textures->Load("pinball/Lights/o.png");
 	lightboosts[Wp].tex = App->textures->Load("pinball/Lights/w.png");
 	lightboosts[Ep].tex = App->textures->Load("pinball/Lights/e.png");
-	lightboosts[Rp].tex = App->textures->Load("pinball/Lights/r.png");
+	lightboosts[Rp].tex = App->textures->Load("pinball/Lights/R.png");
 	lightboosts[Dp].tex = App->textures->Load("pinball/Lights/d.png");
 	lightboosts[Up].tex = App->textures->Load("pinball/Lights/u.png");
 	lightboosts[Np].tex = App->textures->Load("pinball/Lights/n.png");
@@ -185,73 +185,90 @@ bool ModuleSceneIntro::Start()
 
 	// Light Boosts
 
-	for (int i = 0; i < lightnum::__LAST - 1; i++) {
+	for (int i = 0; i < lightnum::__LAST; i++) {
 		lightboosts[i].isLighted = false;
 		lightboosts[i].rect.x = 0;
 		lightboosts[i].rect.y = 0;
 	}
-
-	lightboosts[Ll].isLighted = true;
 	lightboosts[Ll].rect.w = 27;
 	lightboosts[Ll].rect.h = 27;
-	lightboosts[Ll].pos = { 100, 200 };
+	lightboosts[Ll].pos = { 22, 217 };
 
 	lightboosts[Ul].rect.w = 27;
 	lightboosts[Ul].rect.h = 27;
+	lightboosts[Ul].pos = { 57, 217 };
 
 	lightboosts[Vl].rect.w = 27;
 	lightboosts[Vl].rect.h = 27;
+	lightboosts[Vl].pos = { 92, 216 };
 
 	lightboosts[Il].rect.w = 27;
 	lightboosts[Il].rect.h = 27;
+	lightboosts[Il].pos = { 37, 277 };
 
 	lightboosts[Tl].rect.w = 27;
 	lightboosts[Tl].rect.h = 27;
+	lightboosts[Tl].pos = { 78, 277 };
 
 	lightboosts[Pp].rect.w = 42;
 	lightboosts[Pp].rect.h = 36;
+	lightboosts[Pp].pos = { 34, 532 };
 
 	lightboosts[Op].rect.w = 43;
 	lightboosts[Op].rect.h = 34;
+	lightboosts[Op].pos = { 45, 508 };
 
 	lightboosts[Wp].rect.w = 43;
 	lightboosts[Wp].rect.h = 34;
+	lightboosts[Wp].pos = { 57, 483 };
 
 	lightboosts[Ep].rect.w = 35;
 	lightboosts[Ep].rect.h = 46;
+	lightboosts[Ep].pos = { 110, 415 };
 
 	lightboosts[Rp].rect.w = 35;
 	lightboosts[Rp].rect.h = 46;
+	lightboosts[Rp].pos = { 176, 407 };
 
 	lightboosts[Dp].rect.w = 35;
 	lightboosts[Dp].rect.h = 46;
+	lightboosts[Dp].pos = { 208, 418 };
 
 	lightboosts[Up].rect.w = 35;
 	lightboosts[Up].rect.h = 46;
+	lightboosts[Up].pos = { 312, 415 };
 
 	lightboosts[Np].rect.w = 47;
 	lightboosts[Np].rect.h = 33;
+	lightboosts[Np].pos = { 371, 517 };
 
 	lightboosts[Kp].rect.w = 47;
 	lightboosts[Kp].rect.h = 33;
+	lightboosts[Kp].pos = { 376, 546 };
 
 	lightboosts[Ww].rect.w = 27;
 	lightboosts[Ww].rect.h = 27;
+	lightboosts[Ww].pos = { 276, 148 };
 
 	lightboosts[Iw].rect.w = 27;
 	lightboosts[Iw].rect.h = 27;
+	lightboosts[Iw].pos = { 309, 149 };
 
 	lightboosts[Nw].rect.w = 27;
 	lightboosts[Nw].rect.h = 27;
+	lightboosts[Nw].pos = { 342, 149 };
 
 	lightboosts[LCK].rect.w = 57;
 	lightboosts[LCK].rect.h = 48;
+	lightboosts[LCK].pos = { 356, 456 };
 
 	lightboosts[TwoP].rect.w = 37;
 	lightboosts[TwoP].rect.h = 59;
+	lightboosts[TwoP].pos = { 132, 341 };
 	
 	lightboosts[ThreeP].rect.w = 36;
 	lightboosts[ThreeP].rect.h = 57;
+	lightboosts[ThreeP].pos = { 287, 353 };
 	// --- Light Boosts
 
 	// Light Boosts Sensors
@@ -329,6 +346,13 @@ update_status ModuleSceneIntro::Update()
 
 	while(c != NULL)
 	{
+		
+		for (int i = 0; i < lightnum::__LAST; i++) {
+			if (lightboosts[i].isLighted == true) {
+				App->renderer->Blit(lightboosts[i].tex, lightboosts[i].pos.x, lightboosts[i].pos.y, &lightboosts[i].rect);
+			}
+		}
+
 		int x, y;
 		c->data->GetPosition(x, y);
 		App->renderer->Blit(ball, x, y, NULL, 1.0f, c->data->GetRotation());
@@ -370,13 +394,6 @@ update_status ModuleSceneIntro::Update()
 
 	if (!BallisUp && ball_p.x < 115)
 		App->renderer->DrawCircle(ball_p.x + circles.getLast()->data->width, ball_p.y + circles.getLast()->data->height, 11, 255, 255, 255);
-
-
-	for (int i = 0; i < lightnum::__LAST; i++) {
-		if (lightboosts[i].isLighted == true) {
-			App->renderer->Blit(lightboosts[i].tex, lightboosts[i].pos.x, lightboosts[i].pos.y, &lightboosts[i].rect);
-		}
-	}
 
 	for (p2List_item<PhysBody*>* id = isDown.getFirst(); id != NULL; id = id->next) {
 		id->data->body->SetActive(!BallisUp);
